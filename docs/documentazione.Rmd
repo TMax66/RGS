@@ -1,0 +1,285 @@
+---
+title: "Report sanitario gestionale di reparto (RSGR)"
+author: "Controllo di Gestione e Performance (Dr. Tranquillo Vito)"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+# 
+Il progetto RSGR, obiettivo RAR 2022, prevede lo sviluppo di un prototipo di applicativo di report gestionale-sanitario per reparto. Per ogni reparto sarà sviluppato un applicativo web che integra e visualizza l'attività dei laboratori di reparto in modo da permettere ai dirigenti della sezione di avere costantemente a disposizione la situazione aggiornata delle attività svolte dai singoli laboratori, le attività inviate ad altri laboratori, le attività di ricerca e l'attività per la qualità (controlli interni, ring-test, ecc..), in questo senso l'applicativo è uno strumento gestionale. Si affianca un secondo applicativo che sarà consultabile dalle autorità sanitaria ( ATS, REGIONI, MINISTERO), che permetterà la visualizzazione sintetizzata delle attività ufficiali effettuate nell'anno incorso dai servizi veterinari competenti per territorio, con un elevato grado d'interattività e con aggiornamento giornaliero. 
+
+Nella prima fase di attività previste dalla programmazione degli obiettivi RAR, si è proceduto alla definizione delle query necessarie all'estrazione dei dati dal databse IZSLER, alla costruzione dell'interfaccia utente delle due applicazioni nominate (Report di Reparto e Attività Ufficiale), e a popolare alcune sezioni di queste interfacce con tabelle e grafici. Nella seconda fase delle attività fino al 31.12.2022 si procederà a completare il prototipo in modo da permettere, dopo validazione da parte della Direzione, l'estensione del modello a tutti i reparti dell'IZSLER nel 2023.
+
+Nelle seguenti immagini sono riporti gli screenshot delle sezioni sviluppate al 30.08.2022 dei due applicativi. 
+
+**Report di Reparto**
+
+_Home Page_
+```{r echo=FALSE, fig.align = "center",out.width = '100%', }
+knitr::include_graphics("figure/f1.png")
+```
+
+
+_Laboratorio di Sierologia_
+```{r echo=FALSE, fig.align = "center",out.width = '100%', }
+knitr::include_graphics("figure/f2.png")
+```
+
+
+**Attività Ufficiale**
+
+_Home Page_
+```{r echo=FALSE, fig.align = "center",out.width = '100%', }
+knitr::include_graphics("figure/f3.png")
+```
+
+
+_Sanità Animale_
+```{r echo=FALSE, fig.align = "center",out.width = '100%', }
+knitr::include_graphics("figure/f4.png")
+```
+
+
+
+
+<!-- # Project Report Sanitario Festionale di Reparto -->
+
+<!-- Report Sanitario Festionale di Reparto è un applicativo shiny sviluppato dall'ufficio Controllo di Gestione e Performance, come strumento di reporting sanitario e gestionale dei Reparti dell'IZSLER. Per le sedi territoriali è previsto un collegamento un un applicativo che riporta l'attività e i risultati dell'Attività Ufficiale svolta dai servizi sanitari competenti.  -->
+
+<!-- L'applicativo è costituito dalle seguenti app: -->
+
+<!-- -Applicativo principale **Report di Reparto** che riporta l'attività e i risultati del reparto; -->
+
+<!-- -Applicativo **Attività Ufficiale** che riporta i dati dell'attività ufficiale dell'ASL di Modena -->
+
+<!-- Il progetto è costituito da quattro cartelle secondo questa struttura -->
+
+<!-- ```{r, echo=FALSE} -->
+<!-- library(fs) -->
+<!-- dir_tree(path = "C:/Users/vito.tranquillo/Desktop/Git Projects/Reporting-Sanitario", recurse = TRUE) -->
+<!-- ``` -->
+
+<!-- Le app shiny sono ospitate su un server LINUX in ambiente AZURE all'indirizzo rshiny.izsler.it, in cui è installato una versione aggiornata di SHINYSERVER attraverso la tecnologia docker -->
+
+<!-- L'accesso agli applicativi è consentito solo agli utenti IZSLER loggati all'interno della rete dell'Istituto.  -->
+
+<!-- Di seguito per i due applicativi vengono illustrate le fonti dati, le modalità di aggiornamento, le funzioni costruite ad hoc, i calcoli eseguiti ecc. -->
+
+<!-- # R -->
+
+<!-- In questa cartella sono presenti tre file : -->
+
+<!-- - **etl.R** -->
+
+<!-- - **library.R** -->
+
+<!-- - **sql.R** -->
+
+<!-- La cartella **library** contiene i pacchetti utilizzati per i codici presenti nel file **etl.R**,  -->
+
+
+
+<!-- ## sql.R -->
+
+<!-- Le query SQL per il recupero dei dati sono salvate nel file **sql.R**, che viene richiamato nel file **etl.R** mediante l'istruzione:  -->
+<!-- ```{r eval=FALSE, echo=T} -->
+<!-- source(here("R","sql.R"))  -->
+<!-- ``` -->
+
+<!-- Sono presenti tre query: -->
+
+<!-- **_conf_**  questa query estrae dal dbase IZSLER del server dbprod02, informazioni riferite ai conferimenti -->
+<!-- conferiti e accettati dalla Sede Territoriale di Modena dal 2021. Sono presenti quindi, i conferimenti con prove eseguite in STModena o inviati ad altri laboratori con o senza cessione della proprietà del conferimento. Non sono presenti i conferimenti con prove da altri laboratori destinati alla STModena.  -->
+
+<!-- _**ATTENZIONE**  il dataset estratto non ha una chiave univoca. Per ogni conferimento/anno esiste un numero di righe pari al numero del tipo di prove a cui sono stati sottoposti i campioni conferiti. In questo dataset non c'è la colonna "prova". Quindi per vedere a quali prove sono stati sottoposti i campioni del conferimento è neccessario collegare il dataset conf ai dataset estratti con le altre query_ -->
+
+<!-- **_proveIN_** questa query estrae dal dbase IZSLER del server dbprod02, informazioni riferite alle prove **eseguite** nei laboratori della STModena, di conferimenti accettati dalla STModena o anche da altre strutture IZSLER che hanno inviato campioni alla STModena. Per questi ultimi campioni non c'è corrispondenza nel dataset **qconf**, quindi mancano le informazioni relative alle caratteristiche dei conferimenti. -->
+<!-- Anche per **_proveIN_** non 'è una chiave univoca. Per ogni Per ogni conferimento/anno esiste un numero di righe pari al numero esami eseguiti per finalità, specifica prova e/o metodo di prova. In questo dataset non sono presenti le prove di conferimenti accettati dalla STModena ( e quindi presenti in **qconf**) ma inviati ad altri laboratori.  -->
+<!-- Ad esempio il conferimento 108424 del 2021 si riferisce a quattro campioni accettati dalla STModena con finalità "compravendita" in cui sono stati programmati per tutti i campioni la prova Brucella abortus/melitensis: anticorpi con le tecniche SAR e FDC, eseguite in STModena ( laboratorio di sierologia) e la prova 	 -->
+<!-- Leucosi Bovina Enzootica: anticorpi con tecnica ELISA eseguita nel laboratorio di sierologia della STBologna.  -->
+<!-- Quindi in **_proveIN_** per il conferimento 108424/2021 sono presenti 8 righe 4 campioni per 2 esami (fdc e sar).  -->
+
+<!-- **_proveOUT_** questa query estrae dal dbase IZSLER del server dbprod02, informazioni riferite alle prove  di conferimenti accettati dalla STModena ma eseguiti da altri laboratori dell'IZSLER ( con o senza cessione della proprietà del conferimento). Quindi in questo dataset sono presenti  le informazioni relative alla prova Leucosi eseguite con tecnica Elisa dal labortario di sierologia della STBologna sui quattro campioni del conferimento 108424/2021, visto sopra. Anche per questo dataset on esiste una chiave univoca e infatti per il conferimento di cui sopra sono presenti quattro righe. -->
+
+
+<!-- ## etl.R -->
+
+<!-- Questo file contiene i codici preparatori per i dataset che saranno utilizzati dalle app di shiny.  -->
+<!-- Il processo prevede l'estrazione dei dati dal dbase IZSLER, modifiche dei dataset estratti e salvataggio in formato RDS all'interno della cartella "dati/processed".  -->
+
+<!-- **Estrazione dati** -->
+
+<!-- I seguenti codici estraggono i dati dal database IZSLER presente nel server dbprod2 e salvano i dati in formato RDS nella cartella "data/processed" -->
+
+<!-- ```{r eval=FALSE, echo=T} -->
+<!-- library(here) -->
+<!-- source(here("R", "library.R")) -->
+<!-- source(here("R", "sql.R")) -->
+
+<!-- # Accesso al dbase access---- -->
+
+<!-- conn <- DBI::dbConnect(odbc::odbc(), Driver = "SQL Server",  -->
+<!--                        Server = "dbprod02.izsler.it", -->
+<!--                        Database = "IZSLER",  -->
+<!--                        Port = 1433) -->
+
+<!-- conf <- conn %>% tbl(sql(qconf)) %>% as_tibble() -->
+<!-- proveIN <- conn %>% tbl(sql(proveIN)) %>% as_tibble() -->
+<!-- proveOUT <- conn %>% tbl(sql(proveOUT)) %>% as_tibble() -->
+
+<!-- saveRDS(conf, file = here("data","processed",  "conferimenti.RDS")) -->
+<!-- saveRDS(proveIN, file = here("data","processed", "proveIN.RDS")) -->
+<!-- saveRDS(proveOUT, file = here("data","processed", "proveOUT.RDS")) -->
+<!-- ``` -->
+
+
+<!-- **Preparazione dati per l'app shiny** -->
+
+<!-- Il seguente codice prepara il dataset conf.RDS utilizzato nei due applicativi shiny del progetto. -->
+<!-- In particolare questo codice crea un un dataset in cui per ogni conferimento con più finalità viene creata una nuova colonna finalità in cui sono concatenati le diffferenti finalità associate al conferimento. Questo si rende necessario per ottenere un join corretto con il dataset delle prove evitando inopportune duplicazioni di righe dovute alla presenza di più finalità con prove diverse. -->
+<!-- ```{r eval=FALSE, echo=T} -->
+<!-- conferimenti %>% distinct() %>% #<- notare il distinct che elimina duplicazioni di righe -->
+
+<!--   mutate( -->
+<!--          annoprel = year(dtprel), -->
+<!--          annoreg = year(dtreg), -->
+<!--          codaz = casefold(codaz, upper = TRUE), -->
+<!--          Nconf = paste0(anno,nconf), -->
+<!--          comune = sapply(comune, iconv, from = "latin1", to = "UTF-8", sub = ""), -->
+<!--          finalita = sapply(finalita, iconv, from = "latin1", to = "UTF-8", sub = ""), -->
+<!--          motivo_prel = sapply(motivo_prel, iconv, from = "latin1", to = "UTF-8", sub = ""),  -->
+<!--          materiale = sapply(materiale, iconv, from = "latin1", to = "UTF-8", sub = "")) %>%   -->
+
+<!--   distinct(Nconf, .keep_all = TRUE) %>%  -->
+<!--   select(-finalita) %>%  -->
+
+<!--   left_join( -->
+<!--     #il codice sottostante costruisce un dataset utilizzando solo il campo Nconf (anno+nconf) e le finalità  -->
+<!--     conferimenti %>% distinct() %>% #<- notare il distinct che elimina duplicazioni di righe -->
+<!--       mutate(Nconf = paste0(anno,nconf)) %>%  -->
+<!--       select(Nconf, finalita) %>%  -->
+<!--       ## le due righe sottostanti raggruppano le diverse finalità di ogni conferimento in un'unica stringa -->
+<!--       pivot_wider(names_from = "finalita", values_from = "finalita") %>%   -->
+<!--       unite("finalita", 2:85, na.rm = TRUE, remove = FALSE) %>%  -->
+
+
+<!--       select(1,2),  by="Nconf") %>%   -->
+<!-- saveRDS( file = here("data","processed",  "conf.RDS")) -->
+
+<!-- ``` -->
+
+<!-- Il codice sottostante prepara il dataset delle prove unendo il dataset ProveIN che raccoglie le prove eseguite nei laboratori della struttura con il dataset proveOUT che raccoglie le prove di conferimenti accettati presso la struttura ma inviati ( con o senza il diritto di proprietà del conferimento ) ad altri laboratori per l'esecuzione delle prove. -->
+
+<!-- ```{r eval=FALSE, echo=T} -->
+<!-- proveIN %>%   -->
+<!--   bind_rows(proveOUT )%>%  -->
+<!--   mutate(Nconf = paste0(anno,nconf),  -->
+<!--          tecnica = sapply(tecnica, iconv, from = "latin1", to = "UTF-8", sub = ""),  -->
+<!--          testodett = sapply(testodett, iconv, from = "latin1", to = "UTF-8", sub = ""),  -->
+<!--          modexpr2 = sapply(modexpr2, iconv, from = "latin1", to = "UTF-8", sub = ""),  -->
+<!--          prova = sapply(prova, iconv, from = "latin1", to = "UTF-8", sub = "")) %>%  -->
+<!--   saveRDS( file = here("data","processed", "prove.RDS")) -->
+
+<!-- ``` -->
+
+<!-- # app -->
+
+<!-- ## Report di Reparto -->
+
+<!-- In questa cartella sono contenuti i file dell'applicativo shiny relativo all'attività analitica svolta nel Reparto -->
+
+<!-- **global** -->
+<!-- In questo file sono presenti i codici che non necessitano di "reattività", vengono eseguiti dall'applicativo alla prima chiamata e preparano i dati utilizzati nel lato server dell'applicativo  -->
+
+<!-- ```{r echo=FALSE, eval= FALSE} -->
+
+<!-- library(shiny) -->
+<!-- library(here) -->
+<!-- library(tidyverse) -->
+<!-- library(openxlsx) -->
+<!-- library(lubridate) -->
+<!-- library(DT) -->
+<!-- library(zoo) -->
+<!-- library(plotly) -->
+<!-- library(gt) -->
+<!-- library(janitor) -->
+
+
+<!-- # l'app utilizza solo questi due dataset prodotti dal file etl.R -->
+<!-- conf <- readRDS(here("data", "processed", "conf.RDS")) -->
+<!-- prove <- readRDS(here("data", "processed", "prove.RDS")) -->
+
+<!-- ``` -->
+
+<!-- L'applicativo costruisce una pagina per ogni laboratorio del Reparto, di seguito quindi i codici che preparano il dataset filtrato per  i differenti laboratori del reparto. Il filtro anno potrà (dovrà) essere spostato nel lato server nel caso si decida di permettere agli utenti di interagire con 'app per selezionare l'anno d'interesse.  -->
+<!-- per ogni laboratorio il dataset si ottiene collegando il dataset conf al dataset prove con la chiave (anno, nconf) il dataset prove è filtrato per anno, struttura che esegue l'analisi, e laboratorio che esegue l'analisi -->
+
+<!-- ```{r  echo=FALSE, eval=FALSE} -->
+
+<!-- ##lab sierologia ---- -->
+<!-- # campioni accettati da Modena con prove effettuate dal lab di sierologia di Modena -->
+
+<!-- siero <- conf %>%  -->
+<!--   rename(ncamp_accettati = NrCampioni) %>%   -->
+<!--   left_join(prove, by = c("anno", "nconf")) %>%  -->
+<!--   filter( anno == 2022, -->
+<!--                 str_analisi == "Sede Territoriale di Modena", -->
+<!--                 lab_analisi == "Laboratorio Sierologia") -->
+
+
+<!-- ## lab diagnostica  -->
+<!-- # campioni accettati da Modena con prove effettuate dal lab di diagnostica di Modena -->
+
+<!-- diagnostica <- conf %>%  -->
+<!--   rename(ncamp_accettati = NrCampioni) %>%   -->
+<!--   left_join(prove, by = c("anno", "nconf")) %>%  -->
+<!--   filter( anno == 2022, -->
+<!--           str_analisi == "Sede Territoriale di Modena", -->
+<!--           lab_analisi == "Laboratorio Diagnostica Generale") -->
+
+
+<!-- ## lab biologia molecolare  -->
+<!-- # campioni accettati da Modena con prove effettuate dal lab di diagnostica di Modena -->
+
+<!-- biomol <- conf %>%  -->
+<!--   rename(ncamp_accettati = NrCampioni) %>%   -->
+<!--   left_join(prove, by = c("anno", "nconf")) %>%  -->
+<!--   filter( anno == 2022, -->
+<!--           str_analisi == "Sede Territoriale di Modena", -->
+<!--           lab_analisi == "Laboratorio Biologia molecolare") -->
+
+
+<!-- ## lab controllo alimenti -->
+<!-- # campioni accettati da Modena con prove effettuate dal lab di microbiologia alimenti di Modena -->
+<!-- alimenti <- conf %>%  -->
+<!--   rename(ncamp_accettati = NrCampioni) %>%   -->
+<!--   left_join(prove, by = c("anno", "nconf")) %>%  -->
+<!--   filter( anno == 2022, -->
+<!--           str_analisi == "Sede Territoriale di Modena", -->
+<!--           lab_analisi == "Laboratorio Microbiologia degli Alimenti") -->
+
+
+<!-- #attività di ricerca -->
+<!-- #ricerca <-  -->
+
+
+<!-- #controllo qualità -->
+
+
+<!-- #autocontrollo ( attività non ufficiale) -->
+
+<!-- ``` -->
+
+
+
+
+<!-- **ui** -->
+
+<!-- **server** -->
+
+<!-- **server_code** -->
+
+
