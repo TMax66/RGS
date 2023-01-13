@@ -4,21 +4,20 @@ ui <- navbarPage(
     #               id = "logo",
     #               height = "40px", width = "40px",
     #               style = "position: relative;margin:-15px 0px;right:8px;"),
-              "Attività ufficiale AUSL MODENA"),    
+    "Attività ufficiale AUSL MODENA"),    
   theme = bslib::bs_theme(3),
   
-    tags$head(
+  tags$head(
     # tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"),
     # tags$link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css", integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=", crossorigin="anonymous"),
     tags$style(
-    HTML(
-    '
+      HTML(
+        '
     /* ICONA FILTRO DATATABLE */
     input.form-control {
     font-family: Montserrat, Segoe UI Symbol;
     font-weight: 600;
     }
-
     body {
     font-family: Montserrat;
     }
@@ -26,7 +25,6 @@ ui <- navbarPage(
     table.dataTable tbody td {
     vertical-align: middle;
     }
-
     #t1 tbody > tr:last-child,
     #t2 tbody > tr:last-child,
     #t3 tbody > tr:last-child {
@@ -41,11 +39,7 @@ ui <- navbarPage(
     }
     
     
-
-
-
 /*HOME*/
-
     #t1 .table {
     width: 95% !important;
         margin-left: -10px;
@@ -62,9 +56,7 @@ ui <- navbarPage(
     }
     
     
-
 /*SANITA ANIMALE*/
-
     #asldrill .dataTables_length {
     float: right;
     }
@@ -80,7 +72,6 @@ ui <- navbarPage(
     
     
 /*SICUREZZA ALIMENTARE*/
-
     #asldrillalim .dataTables_length {
     float: right;
     }
@@ -95,7 +86,6 @@ ui <- navbarPage(
     
     
 /*ALIMENTI ZOOTECNICI*/
-
     #asldrillalimZot .dataTables_length {
     float: right;
     }
@@ -108,12 +98,11 @@ ui <- navbarPage(
     font-weight: bold;
     }
     
-
     ')
     )
-    ),
+  ),
   
-# HOME PAGE ----
+  # HOME PAGE ----
   tabPanel(
     title = "Home", 
     value = "home",
@@ -123,8 +112,8 @@ ui <- navbarPage(
                column(12,
                       wellPanel(
                         leafletOutput("momap", height = 500))
-                      )
-               ),
+               )
+      ),
       fluidRow(style = "margin-left: 150px; margin-right: 150px;",
                column(12,
                       wellPanel(
@@ -136,14 +125,14 @@ ui <- navbarPage(
                                    choices = c("Tutti",
                                                "Sanità Animale","Alimenti Uomo", "Alimenti Zootecnici"),
                                    inline = TRUE)
-                                 ),
+                          ),
                           column(12,
                                  plotlyOutput("p1")
-                                 )
                           )
                         )
                       )
-               ),
+               )
+      ),
       
       fluidRow(style = "margin-left: 0px; margin-right: 0px;",
                column(12, align = "center",
@@ -158,7 +147,7 @@ ui <- navbarPage(
                         fluidRow(
                           style = "display:flex",
                           column(10, style = "float:left; heigth:300px;",
-                          tableOutput("t1")
+                                 tableOutput("t1")
                           ),
                           column(2, style = "float: right;
                                     max-width: 200px;
@@ -175,11 +164,11 @@ ui <- navbarPage(
                                    width = '200px',
                                    src = "bovini2.png",
                                    align = "right"
-                                   )
                                  )
                           )
-                        ),
-# https://stackoverflow.com/questions/7273338/how-to-vertically-align-an-image-inside-a-div
+                        )
+                      ),
+                      # https://stackoverflow.com/questions/7273338/how-to-vertically-align-an-image-inside-a-div
                       wellPanel(
                         h3("Controllo Alimenti"),
                         br(),
@@ -188,7 +177,7 @@ ui <- navbarPage(
                           style = "display:flex",
                           column(10, style = "float:left; heigth:300px;",
                                  tableOutput("t2")
-                                 ),
+                          ),
                           column(2, style = "float: right;
                                     max-width: 200px;
                                     min-width: 200px;
@@ -204,9 +193,9 @@ ui <- navbarPage(
                                    width = '200px',
                                    src = "Mta2.png",
                                    align = "right")
-                                 )
                           )
-                        ),
+                        )
+                      ),
                       wellPanel(
                         h3("Alimenti Zootecnici"),
                         br(),
@@ -215,7 +204,7 @@ ui <- navbarPage(
                           style = "display:flex",
                           column(10, style = "float:left; heigth:300px;",
                                  tableOutput("t3")
-                                 ),
+                          ),
                           column(2, style = "float: right;
                                     max-width: 200px;
                                     min-width: 200px;
@@ -230,24 +219,24 @@ ui <- navbarPage(
                                      width = '200px',
                                      src = "mangimi2.png",
                                      align = "right")
-                                 )
-                                 )
+                          )
                         )
-)))), 
-
-#______________________________________________________________________________________________
-
-
-
-
-
-
-# SANITA' ANIMALE----
+                      )
+               )))), 
+  
+  #______________________________________________________________________________________________
+  
+  
+  
+  
+  
+  
+  # SANITA' ANIMALE----
   tabPanel(
     title = "Sanità Animale",
     value = "SAnim",
     tabsetPanel(
-    # tabsetcampionamenti-----
+      # tabsetcampionamenti-----
       tabPanel("Campionamenti",
                fluidPage(
                  br(),
@@ -263,104 +252,118 @@ ui <- navbarPage(
                               width = NULL,
                               choiceNames = NULL,
                               choiceValues = NULL
-                              ),
+                            ),
                             selectInput(
                               inputId = "finalita", 
                               label = "Seleziona il tipo di campionamento", 
                               choices = c(" ", levels(factor(confSA$finalita)))
-                              )
                             )
-                          ),
+                          )
+                   ),
                    column(8, style = "padding-right:0px;",
                           uiOutput("tsa")
-                          )
-                   ), #chiude la fluidRow
+                   )
+                 ), #chiude la fluidRow
                  hr(),
                  textOutput("finalita_text_1"),
                  hr(),
                  fluidPage(style = "padding-left:0px; padding-right:0px;",
                            fluidRow(
                              uiOutput("tsadrill")
-                             )
                            )
                  )
-               ), # chiude il tabPanel campionamenti
-    # tabset ricerca codiceaziendale----
-    tabPanel("Ricerca Codice Aziendale",
-             fluidPage(
-               br(),
-               fluidRow(
-                 column(4, style = "padding-left:0px;",
-                        wellPanel(
-                 h4("Ricerca informazioni per codice aziendale",
-                 style = "margin-top: 0px;margin-bottom: 40px; font-weight: 700"),
-                 textInput("codiceall",
-                           "Inserisci il codice azienda",
-                           "")))),
+               )
+      ), # chiude il tabPanel campionamenti
+      # tabset ricerca codiceaziendale----
+      tabPanel("Ricerca Codice Aziendale",
+               fluidPage(
+                 br(),
+                 fluidRow(
+                   column(4, style = "padding-left:0px;",
+                          wellPanel(
+                            h4("Ricerca informazioni per codice aziendale",
+                               style = "margin-top: 0px;margin-bottom: 40px; font-weight: 700"),
+                            textInput("codiceall",
+                                      "Inserisci il codice azienda",
+                                      "")))),
                  hr(),
                  uiOutput("tcode"),
                  uiOutput("tcodedrill")
                )
-             ), # chiude il tabPanel ricerca codiceaziendale
-    # Mappe ----
-    tabPanel("Mappe",
-             fluidPage(
-               useShinyjs(),
-               br(),
-               fluidRow(
-                 column(4, style = "padding-left:0px;",
-                        wellPanel(
-                          h4("Mappa gli allevamenti d'interesse",
-                             style = "margin-top: 0px;margin-bottom: 40px; font-weight: 700"),
-                          leafletOutput("mobuffmap", height = 500)
-                          )   ), 
-                 
-                 column(3, style = "padding-left:0px;",
-                        wellPanel(
-                          textInput("codaz2", "Inserisci Codice Azienda"), 
-                          sliderInput("area", "Definisci l'area buffer", min = 1000, max = 10000, value = 3000),
-                          actionButton("prot", "Genera mappa"),
-                          actionButton("unprot", "Reset mappa")
-                        ), 
-                        wellPanel(
-                          h4("Campionamenti"),
-                          radioButtons(
-                            inputId = "anno2",
-                            label = "Seleziona l'anno" ,
-                            choices =c("2021", "2022"),
-                            selected = "2022",
-                            inline = TRUE,
-                            width = NULL,
-                            choiceNames = NULL,
-                            choiceValues = NULL
-                          ),
-                          selectInput(
-                            inputId = "finalitamappa", 
-                            label = "Seleziona il tipo di campionamento", 
-                            choices = c(" ", levels(factor(confSA$finalita)))
+      ), # chiude il tabPanel ricerca codiceaziendale
+      # Mappe ----
+      tabPanel("Mappe",
+               fluidPage(
+                 useShinyjs(),
+                 br(),
+                 fluidRow(style = "margin-bottom: 20px;",
+                          column(6, style = "padding-left:0px;",
+                                 wellPanel(style = "margin-bottom: 0px;
+    padding-top: 25px;
+    padding-bottom: 25px;",
+                                           leafletOutput("mobuffmap", height = 500)
+                                 )
                           ), 
                           
-                          actionButton("prot2", "Genera mappa"),
-                          actionButton("unprot2", "Reset mappa")
-                          
-                          
-                        )
-                        ), 
+                          column(6, style = "padding-left:0px;",
+                                 wellPanel(style = "margin-bottom: 8px;
+    padding-top: 25px;
+    padding-bottom: 15px;",
+                                           h4("Mappa gli allevamenti d'interesse",
+                                              style = "margin-top: 0px;margin-bottom: 20px; font-weight: 700"),
+                                           textInput("codaz2", "Inserisci Codice Azienda"), #https://stackoverflow.com/questions/63107357/how-to-force-shiny-input-to-be-capitalized 
+                                           sliderInput("area", "Definisci l'area buffer", min = 1000, max = 10000, value = 3000,
+                                                       step = 1000, post = " mt", sep = "."),
+                                           actionButton("prot", "Genera mappa"),
+                                           actionButton("unprot", "Reset mappa")
+                                 ), 
+                                 wellPanel(style = "margin-bottom: 0px;
+    padding-top: 25px;
+    padding-bottom: 15px;",
+                                           h4("Campionamenti",
+                                              style = "margin-top: 0px;margin-bottom: 20px; font-weight: 700"),
+                                           radioButtons(
+                                             inputId = "anno4",
+                                             label = "Seleziona l'anno" ,
+                                             choices =c("2021", "2022"),
+                                             selected = "2022",
+                                             inline = TRUE,
+                                             width = NULL,
+                                             choiceNames = NULL,
+                                             choiceValues = NULL
+                                           ),
+                                           selectInput(
+                                             inputId = "finalitamappa", 
+                                             label = "Seleziona il tipo di campionamento", 
+                                             selected = NULL,
+                                             choices = c("", levels(factor(confSA$finalita)))
+                                           ), 
+                                           
+                                           actionButton("prot2", "Genera mappa"),
+                                           actionButton("unprot2", "Reset mappa")
+                                           
+                                 )
+                          )), 
                  
-                 column(5, style = "padding-left:0px;",
-                        wellPanel(
-                          h4("Elenco Aziende selezionate"),
-                          # dataTableOutput("allfoc")
-                          tags$div(id = "placeholder"),
-                          tags$div(id = "placeholder2")
-                        ))
-               )
-             ))
-    ) # chiude il tabsetPanel sanità animale
-    ), # chiude il tabPanel sanità animale
-
-
-# SICUREZZA ALIMENTARE----
+                 
+                 fluidPage(style = "padding-left: 0px;
+    padding-right: 0px;",
+                           fluidRow(
+                             column(12, style = "padding-left:0px;",
+                                    wellPanel(
+                                      h4("Elenco Aziende selezionate",style="text-align: center; font-weight: 700"),
+                                      # dataTableOutput("allfoc")
+                                      tags$div(id = "placeholder"),
+                                      tags$div(id = "placeholder2")
+                                    ))
+                           )
+                 ))
+      )# chiude il tabPanel mappe
+    )# chiude il tabsetPanel sanità animale
+  ),#chiude il tabPanel sanità animale
+  
+  
+  # SICUREZZA ALIMENTARE----
   tabPanel(
     title = "Sicurezza Alimentare",
     value = "uff",
@@ -377,67 +380,67 @@ ui <- navbarPage(
                    width = NULL,
                    choiceNames = NULL,
                    choiceValues = NULL
-                   ),
+                 ),
                  selectInput(
                    inputId = "finalita2", 
                    label = "Seleziona il tipo di campionamento", 
                    choices = c("", levels(factor(confSicA$finalita)))
-                   )
                  )
-               ),
+               )
+        ),
         column(8, style = "padding-right:0px;",
                uiOutput("tsica")
-               )
-        ), # chiude la fluidRow
+        )
+      ), # chiude la fluidRow
       hr(),
       textOutput("finalita_text_2"),
       hr(),
       fluidPage(style = "padding-left:0px;padding-right:0px;",
                 fluidRow(
                   uiOutput("tsalimdrill")
-                  )
                 )
       )
-    ), 
-
-
-# ALIMENTI ZOOTECNICI----
+    )
+  ), 
+  
+  
+  # ALIMENTI ZOOTECNICI----
   tabPanel(
     title = "Alimenti Zootecnici",
     value = "uff",
     fluidPage( 
-    fluidRow(
-      column(4, style = "padding-left:0px;",
-             wellPanel(
-               radioButtons(
-                 inputId = "anno3",
-                 label = "Seleziona l'anno" ,
-                 choices =c("2021", "2022"),
-                 selected = "2022",
-                 inline = TRUE,
-                 width = NULL,
-                 choiceNames = NULL,
-                 choiceValues = NULL
+      fluidRow(
+        column(4, style = "padding-left:0px;",
+               wellPanel(
+                 radioButtons(
+                   inputId = "anno3",
+                   label = "Seleziona l'anno" ,
+                   choices =c("2021", "2022"),
+                   selected = "2022",
+                   inline = TRUE,
+                   width = NULL,
+                   choiceNames = NULL,
+                   choiceValues = NULL
                  ),
-               selectInput(
-                 inputId = "finalita3", 
-                 label = "Seleziona il tipo di campionamento", 
-                 choices = c("", levels(factor(confAZ$finalita)))
+                 selectInput(
+                   inputId = "finalita3", 
+                   label = "Seleziona il tipo di campionamento", 
+                   choices = c("", levels(factor(confAZ$finalita)))
                  )
                )
-             ),
-      column(8, style = "padding-right:0px;",
-             uiOutput("tza")
-             )
+        ),
+        column(8, style = "padding-right:0px;",
+               uiOutput("tza")
+        )
       ), # chiude la fluidRow
-    hr(),
-    textOutput("finalita_text_3"),
-    hr(),
-    fluidPage(style = "padding-left:0px;padding-right:0px;",
-              fluidRow(
-                uiOutput("aslAZdrill")
+      hr(),
+      textOutput("finalita_text_3"),
+      hr(),
+      fluidPage(style = "padding-left:0px;padding-right:0px;",
+                fluidRow(
+                  uiOutput("aslAZdrill")
                 )
-              )
+      )
     )
-    )
+  )
 )
