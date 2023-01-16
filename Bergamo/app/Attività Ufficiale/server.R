@@ -126,9 +126,6 @@ server<-function(input, output, session) {
   
   
   
-  
-  
-  
   # dataTableOutput("t3SA"), br(), hr(),
   # dataTableOutput("cadrill")
   
