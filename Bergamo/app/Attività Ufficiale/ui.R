@@ -117,6 +117,19 @@ ui <- navbarPage(
     #allfoc {
     margin-top: 30px;
     }
+    
+    /*PER CENTRARE DATATABLE ALLFOC MODENA*/
+    #allfoc,
+    #mappacamp {
+    text-align: -webkit-center;
+    }
+    
+    #allfoc .btn-group,
+    #mappacamp .btn-group {
+    display: unset;
+    }
+    /*------------------------------------*/
+    
 
     #mappacamp .dataTables_length,
     #allfoc .dataTables_length {
@@ -146,6 +159,11 @@ ui <- navbarPage(
     
     div.form-group.has-feedback{
     width: 100%;
+    }
+    
+    #allfoc div.dataTables_wrapper,
+    #mappacamp div.dataTables_wrapper {
+    width: fit-content;
     }
 
     

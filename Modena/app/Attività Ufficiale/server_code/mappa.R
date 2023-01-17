@@ -319,7 +319,7 @@ observeEvent( #cliccando genera mappa produce la mappa con gli allevamenti contr
                              list(className = 'dt-head-center', targets = "_all"),
                              list(width = '130px', targets =c(1, 2)),
                              list(width = '50px', targets =c(10)),
-                             list(width = '130px', targets =c(3)),
+                             #list(width = '130px', targets =c(3)),
                              list(width = '130px', targets =c(5, 7))
                              # list(width = '60px', targets =c(6, 7))
                            ),
