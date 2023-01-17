@@ -221,7 +221,7 @@ observeEvent(
     
     removeUI("#mappacamp") #cancella la tabella ...
     
-    lleafletProxy("mobuffmap", session, data = campmappa()) %>%
+    leafletProxy("mobuffmap", session, data = campmappa()) %>%
       clearMarkers() %>% clearShapes() %>%
       setView(10.89347, 44.53753, zoom = 9) %>% 
       addPolygons(data = ER, fill = FALSE, weight = 1, color = "black") %>% 

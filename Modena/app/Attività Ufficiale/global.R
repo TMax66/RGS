@@ -51,7 +51,7 @@ coordbv <- coordbv %>%
 
 # Preparazione dati----
 conf <- conf %>% 
-  mutate(finalita = sapply(finalita, iconv, from = "latin1", to = "UTF-8", sub = "")) %>%
+ # mutate(finalita = sapply(finalita, iconv, from = "latin1", to = "UTF-8", sub = "")) %>%
   rename(ncamp_accettati = NrCampioni) %>% 
   filter(tipo_prelievo == "Ufficiale", 
          str_detect(ASL, "MODENA"))

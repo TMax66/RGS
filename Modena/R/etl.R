@@ -45,13 +45,13 @@ proveIN %>%
          ) %>% 
   saveRDS(file = here("Modena", "data", "processed", "prove.RDS"))
 
-conferimenti <- conferimenti %>% 
-  mutate(
-    # comune = sapply(comune, iconv, from = "latin1", to = "UTF-8", sub = ""),
-    # finalita = sapply(finalita, iconv, from = "latin1", to = "UTF-8", sub = ""),
-    # motivo_prel = sapply(motivo_prel, iconv, from = "latin1", to = "UTF-8", sub = ""), 
-    # materiale = sapply(materiale, iconv, from = "latin1", to = "UTF-8", sub = "")
-    )
+# conferimenti <- conferimenti %>% 
+#   mutate(
+#     comune = sapply(comune, iconv, from = "latin1", to = "UTF-8", sub = ""),
+#     finalita = sapply(finalita, iconv, from = "latin1", to = "UTF-8", sub = ""),
+#     motivo_prel = sapply(motivo_prel, iconv, from = "latin1", to = "UTF-8", sub = ""),
+#     materiale = sapply(materiale, iconv, from = "latin1", to = "UTF-8", sub = "")
+#     )
 
 conferimenti %>%
   distinct() %>%
