@@ -112,6 +112,7 @@ server<-function(input, output, session) {
   })
   
   
+  
  # output$finalita_text_ricerca <- renderText({ "Inserisci il CODICE AZIENDA e seleziona il CONFERIMENTO per vedere i dettagli delle prove" })
    output$finalita_text_ricerca <- renderText({
     validate(need(nrow(summarycodaz()) > 0, ""))
@@ -121,9 +122,6 @@ server<-function(input, output, session) {
   
   ## Codice mappa buffer e campionamenti----
   source("server_code/mappa.R", local = TRUE)
-  
-  
-  
   
   
   
