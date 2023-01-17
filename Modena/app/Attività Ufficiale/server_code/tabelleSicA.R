@@ -1,6 +1,12 @@
-alimenti <- reactive(
-  confSicA %>% 
-    filter(anno == input$anno2, finalita == input$finalita2))
+alimenti <- reactive({
+  if(input$finalita2 == "Tutte le finalità") {
+    confSicA %>% 
+      filter(anno == input$anno2)
+  } else {
+    confSicA %>% 
+      filter(anno == input$anno2, finalita == input$finalita2)
+  }
+})
 
 #tabella summary----
 
@@ -33,22 +39,41 @@ summaryalim <- reactive({
 
 
 
-output$t1SicA <- DT::renderDataTable(
-  summaryalim() %>% 
-    mutate(ASL = gsub(".*- ","", ASL)) %>%
-    rename(Distretto = ASL) %>% 
-    datatable(rownames = FALSE,
-              style = 'bootstrap',
-              selection = 'single',
-              options = list(dom = 't'))
-)
-
+output$t1SicA <- DT::renderDataTable({
+  
+  if (req(input$finalita2) == "Tutte le finalità") {
+    
+    summaryalim() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'none',
+                options = list(dom = 't'))
+    
+  } else {  
+    
+    summaryalim() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'single',
+                options = list(dom = 't'))
+    
+  }
+  
+})
 
 # tabella drill down
 
 ASLdrillalim <- reactive({
   shiny::validate(
-    need(length(input$t1SicA_rows_selected) > 0, "Seleziona il DISTRETTO per vedere il dettaglio delle attività")
+    need(length(input$t1SicA_rows_selected) > 0, "Seleziona la FINALITÀ e il DISTRETTO per vedere il dettaglio delle attività")
   )
   
   

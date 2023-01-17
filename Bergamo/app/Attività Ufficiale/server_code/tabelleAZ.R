@@ -40,18 +40,36 @@ summaryazot <- reactive({
 
 
 
-output$t1AZ <- DT::renderDataTable(
-  summaryazot() %>% 
-  mutate(ASL = gsub(".*- ","", ASL)) %>%
-  rename(Distretto = ASL) %>% 
-  datatable(rownames = FALSE,
-            # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
-            #                                   input$finalita3),
-            style = 'bootstrap',
-            selection = 'single',
-            options = list(dom = 't'))
-  )
 
+output$t1AZ <- DT::renderDataTable({
+  
+  if (req(input$finalita3) == "Tutte le finalità") {
+    
+    summaryazot() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'none',
+                options = list(dom = 't'))
+    
+  } else {  
+    
+    summaryazot() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'single',
+                options = list(dom = 't'))
+    
+  }
+  
+})
 
 # tabella drill down
 

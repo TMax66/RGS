@@ -40,15 +40,37 @@ summaryalim <- reactive({
 
 
 
-output$t1SicA <- DT::renderDataTable(
-  summaryalim() %>% 
-    mutate(ASL = gsub(".*- ","", ASL)) %>%
-    rename(Distretto = ASL) %>% 
-    datatable(rownames = FALSE,
-              style = 'bootstrap',
-              selection = 'single',
-              options = list(dom = 't'))
-)
+
+output$t1SicA <- DT::renderDataTable({
+  
+  if (req(input$finalita2) == "Tutte le finalità") {
+    
+    summaryalim() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'none',
+                options = list(dom = 't'))
+    
+  } else {  
+    
+    summaryalim() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'single',
+                options = list(dom = 't'))
+    
+  }
+  
+})
+
 
 
 # tabella drill down

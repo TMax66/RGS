@@ -144,6 +144,11 @@ ui <- navbarPage(
     width: fit-content !important;
     }
     
+    div.form-group.has-feedback{
+    width: 100%;
+    }
+
+    
     
     
 /*SICUREZZA ALIMENTARE*/

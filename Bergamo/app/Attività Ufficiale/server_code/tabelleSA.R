@@ -40,17 +40,35 @@ summaryCamp <- reactive({
 
 
 
-output$t1SA <- DT::renderDataTable(
-  summaryCamp() %>%
-    mutate(ASL = gsub(".*- ","", ASL)) %>%
-    rename(Distretto = ASL) %>%
-    datatable(rownames = FALSE,
-              # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
-              #                                   input$finalita),
-              style = 'bootstrap',
-              selection = 'single',
-              options = list(dom = 't'))
-)
+output$t1SA <- DT::renderDataTable({
+  
+  if (req(input$finalita) == "Tutte le finalità") {
+    
+    summaryCamp() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'none',
+                options = list(dom = 't'))
+    
+  } else {  
+    
+    summaryCamp() %>%
+      mutate(ASL = gsub(".*- ","", ASL)) %>%
+      rename(Distretto = ASL) %>%
+      datatable(rownames = FALSE,
+                # caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color:black; font-size:100% ;',
+                #                                   input$finalita),
+                style = 'bootstrap',
+                selection = 'single',
+                options = list(dom = 't'))
+    
+  }
+  
+})
 
 
 # tabella drill down
