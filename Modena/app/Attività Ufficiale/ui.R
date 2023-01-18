@@ -18,6 +18,7 @@ ui <- navbarPage(
     font-family: Montserrat, Segoe UI Symbol;
     font-weight: 600;
     }
+    
     body {
     font-family: Montserrat;
     }
@@ -25,6 +26,7 @@ ui <- navbarPage(
     table.dataTable tbody td {
     vertical-align: middle;
     }
+    
     #t1 tbody > tr:last-child,
     #t2 tbody > tr:last-child,
     #t3 tbody > tr:last-child {
@@ -38,8 +40,14 @@ ui <- navbarPage(
     font-size: 200%;
     }
     
+    #finalita_text_ricerca {
+    font-weight: 500;
+    }
+
+    
     
 /*HOME*/
+
     #t1 .table {
     width: 95% !important;
         margin-left: -10px;
@@ -57,16 +65,104 @@ ui <- navbarPage(
     
     
 /*SANITA ANIMALE*/
+
     #asldrill .dataTables_length {
     float: right;
     }
        
     #asldrill .dataTables_info {
     float: left;
-    }   
+    margin-top: 30px;
+    }  
+
+    #asldrill th.sorting {
+    vertical-align: middle;
+    }
     
+    #asldrill .dataTables_paginate {
+    margin-top: 30px;
+    }    
+
     #t1SA tbody > tr:last-child {
     font-weight: bold;
+    }
+
+/*RICERCA CODICE AZIENDA*/
+
+    #t3SA .dataTables_length,
+    #cadrill .dataTables_length {
+    float: right;
+    }
+       
+    #t3SA .dataTables_info,
+    #cadrill .dataTables_info {
+    float: left;
+    margin-top: 30px;
+    }      
+    
+    
+    #t3SA th.sorting,
+    #cadrill th.sorting {
+    vertical-align: middle;
+    }
+
+/*MAPPA CAMPIONAMENTI*/
+
+    #mappacamp,
+    #allfoc {
+    margin-top: 30px;
+    }
+    
+    
+    /*PER CENTRARE DATATABLE ALLFOC MODENA*/
+    #allfoc,
+    #mappacamp {
+    text-align: -webkit-center;
+    }
+    
+    #allfoc .btn-group,
+    #mappacamp .btn-group {
+    display: unset;
+    }
+    /*------------------------------------*/
+
+
+    #mappacamp .dataTables_length,
+    #allfoc .dataTables_length {
+    float: right;
+    }
+       
+    #mappacamp .dataTables_info,
+    #allfoc .dataTables_info {
+    float: left;
+    margin-bottom: 0px;
+    margin-top: 30px;
+    }      
+    
+    #mappacamp .dataTables_paginate,
+    #allfoc .dataTables_paginate {
+    margin-top: 30px;
+    }    
+    
+    #mappacamp th.sorting,
+    #allfoc th.sorting {
+    vertical-align: middle;
+    }
+    
+    #codazModalDiv .modal-dialog {
+    width: fit-content !important;
+    }
+    
+    
+    
+    
+    div.form-group.has-feedback{
+    width: 100%;
+    }
+    
+    #allfoc div.dataTables_wrapper,
+    #mappacamp div.dataTables_wrapper {
+    width: fit-content;
     }
     
     
@@ -78,8 +174,17 @@ ui <- navbarPage(
        
     #asldrillalim .dataTables_info {
     float: left;
+    margin-top: 30px;
     }   
     
+    #asldrillalim th.sorting {
+    vertical-align: middle;
+    }
+    
+    #asldrillalim .dataTables_paginate {
+    margin-top: 30px;
+    }    
+
     #t1SicA tbody > tr:last-child {
     font-weight: bold;
     }
@@ -92,11 +197,32 @@ ui <- navbarPage(
        
     #asldrillalimZot .dataTables_info {
     float: left;
+    margin-top: 30px;
     }   
+
+    #asldrillalimZot th.sorting {
+    vertical-align: middle;
+    }
+
+    #asldrillalimZot .dataTables_paginate {
+    margin-top: 30px;
+    }    
     
     #t1AZ tbody > tr:last-child {
     font-weight: bold;
     }
+    
+    #finalita ~ .selectize-control.single .selectize-dropdown [data-value="Tutte le finalità"],
+    #finalita2 ~ .selectize-control.single .selectize-dropdown [data-value="Tutte le finalità"],
+    #finalita3 ~ .selectize-control.single .selectize-dropdown [data-value="Tutte le finalità"]
+    /*#finalita ~ .selectize-control.single .selectize-input [data-value="Tutte le finalità"], */
+    /*#finalita2 ~ .selectize-control.single .selectize-input [data-value="Tutte le finalità"],*/
+    /*#finalita3 ~ .selectize-control.single .selectize-input [data-value="Tutte le finalità"] */
+    {font-weight: bold }
+    
+
+
+
     
     ')
     )
@@ -108,7 +234,7 @@ ui <- navbarPage(
     value = "home",
     
     fluidPage(
-      fluidRow(style = "margin-left: 0px; margin-right: 0px;",
+      fluidRow(style = "margin-left: 150px; margin-right: 150px;",
                column(12,
                       wellPanel(
                         leafletOutput("momap", height = 500))
@@ -256,7 +382,7 @@ ui <- navbarPage(
                             selectInput(
                               inputId = "finalita", 
                               label = "Seleziona il tipo di campionamento", 
-                              choices = c(" ", levels(factor(confSA$finalita)))
+                              choices = c("Tutte le finalità", levels(factor(confSA$finalita)))
                             )
                           )
                    ),
@@ -286,10 +412,17 @@ ui <- navbarPage(
                             textInput("codiceall",
                                       "Inserisci il codice azienda",
                                       "")))),
-                 hr(),
-                 uiOutput("tcode"),
-                 uiOutput("tcodedrill")
-               )
+                 fluidRow(style = "padding-left:15px; padding-right:0px;",
+                          textOutput("finalita_text_ricerca")),
+                 br(),
+                 #hr(),
+                 fluidPage(style = "padding-left:0px; padding-right:0px;",
+                           fluidRow(
+                             uiOutput("tcode"),
+                             uiOutput("tcodedrill")
+                           )
+      )
+      )
       ), # chiude il tabPanel ricerca codiceaziendale
       # Mappe ----
       tabPanel("Mappe",
@@ -384,7 +517,7 @@ ui <- navbarPage(
                  selectInput(
                    inputId = "finalita2", 
                    label = "Seleziona il tipo di campionamento", 
-                   choices = c("", levels(factor(confSicA$finalita)))
+                   choices = c("Tutte le finalità", levels(factor(confSicA$finalita)))
                  )
                )
         ),
@@ -425,7 +558,7 @@ ui <- navbarPage(
                  selectInput(
                    inputId = "finalita3", 
                    label = "Seleziona il tipo di campionamento", 
-                   choices = c("", levels(factor(confAZ$finalita)))
+                   choices = c("Tutte le finalità", levels(factor(confAZ$finalita)))
                  )
                )
         ),
