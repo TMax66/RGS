@@ -59,14 +59,15 @@ conferimenti %>%
          annoprel = year(dtprel),
          annoreg = year(dtreg),
          codaz = casefold(codaz, upper = TRUE),
-         Nconf = paste0(anno, nconf)) %>%
+         Nconf = paste0(annoreg, nconf)) %>%
   distinct(Nconf, .keep_all = TRUE) %>% 
   select(-finalita) %>% 
   left_join(
     conferimenti %>%
       distinct() %>% 
       mutate(anno = year(dtconf),
-             Nconf = paste0(anno,nconf)) %>% 
+             annoreg = year(dtreg),
+             Nconf = paste0(annoreg, nconf)) %>% 
       select(Nconf, finalita) %>% 
       distinct() %>% 
       pivot_wider(names_from = "finalita", values_from = "finalita") %>%  

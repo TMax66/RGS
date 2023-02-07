@@ -71,7 +71,7 @@ output$sdrill <- DT::renderDataTable(server = TRUE,{
   })
 
 #_________________________________________________________________________________________________
-# #Lab Diagnostica Generale----
+ #Lab Diagnostica Generale----
 # 
 dtD <- reactive({
   diagnostica %>%
@@ -93,14 +93,28 @@ output$Dt1 <- renderDataTable({
     # top_n(30) %>%
     arrange(desc(n)) %>%
     # adorn_totals(col = 2) %>%
-    datatable(style = 'bootstrap',
+    datatable(#style = 'bootstrap',
               rownames = FALSE,
               selection = 'none',
+              colnames = c("Tipo di prova",#0
+                           "Esami eseguiti",#1
+                           "Tempo medio (gg)"),#2
               options = list(
                 class = 'compact row-border',
-                dom = 'tip',
-                pageLength = 10)
-    )
+                dom = 'tp',
+                pageLength = 10,
+                #autoWidth = TRUE,
+                columnDefs = list(
+                  # list(className = 'dt-body-right', targets = c(6, 7, 13)),
+                  # list(className = 'dt-body-center', targets = c(1)),
+                  # list(className = 'dt-head-center', targets = "_all"),
+                  list(width = '70px', targets =c(1)),
+                  list(width = '90px', targets =c(2))
+                  ),
+                language = list(paginate = list(previous = "Precedente", `next` = "Successiva")
+                                )
+              )
+              )
   })
 # 
 # ## tab principale di sintesi----
@@ -128,19 +142,59 @@ prove_diagn <- reactive({
     need(length(input$table_diagn_rows_selected) > 0, "")
     )
 
-  select_conf <- conf_diagn()[as.integer(input$table_diagn_rows_selected), ]$nconf
+  select_conf <- conf_diagn()[as.integer(input$table_diagn_rows_selected), ]$Nconf
 
   diagnostica %>%
-    filter(nconf == select_conf) %>%
-    dplyr::select(nconf, codaz, prova, tecnica, dtinizio, dtfine, numero_del_campione, "esito" = valore) %>% 
+    filter(Nconf == select_conf) %>%
+    mutate(Nconf2 = as.numeric(gsub("^.{0,4}", "", Nconf))) %>% 
+    dplyr::select(Nconf2, verbale, codaz, numero_del_campione, dtinizio, dtfine, specie,
+                  materiale, prova, tecnica, "esito" = valore, Nconf) %>% 
     DT::datatable(
       style = 'bootstrap',
       rownames = FALSE,
       selection = 'none',
+      # extensions = 'Buttons',
+      colnames = c("Conferimento",#0
+                   "Verbale",#1
+                   "Codice Azienda",#2
+                   "Numero campione",#3
+                   "Data inizio",#4
+                   "Data fine",#5
+                   "Specie",#6
+                   "Materiale",#7
+                   "Prova",#8
+                   "Tecnica",#9
+                   "Esito",#10
+                   "Conferimento_0"),#11
       options = list(
         class = 'compact row-border',
         dom = 'tip',
-        pageLength = 5)
+        pageLength = 5,
+        order = list(list(3, 'asc')),
+        # buttons = list(
+        #   list(extend = "excel", text = "Scarica Tutto",
+        #        filename = paste("Laboratorio di Diagnostica", "- dati al", format(as.Date(substr(max(diagnostica$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+        #        title = NULL,
+        #        titleAttr = "Excel",
+        #        exportOptions = list(
+        #          modifier = list(page = "all"),
+        #          columns = c(0,1,2,3,4,5,6,7,8,9,10)))),
+        columnDefs = list(
+        #   list(orderData = 4, targets = 6),
+        #   list(orderData = 5, targets = 7),
+        #   list(orderData = 0, targets = 1),
+        #   list(orderData = 12, targets = 13),
+          list(visible = FALSE, targets = c(11))),
+        language = list(decimal = ",",
+                        thousands = ".",
+                        search = "Cerca: ",
+                        lengthMenu = "Mostra _MENU_ esami",
+                        paginate = list(previous = "Precedente", `next` = "Successiva"),
+                        info = "_START_ - _END_ di _TOTAL_ esami",
+                        infoFiltered = "(su un totale di _MAX_ esami)",
+                        infoEmpty = "Nessun esame disponibile",
+                        zeroRecords = "---")
+        )
       ) %>% 
     formatDate(
       columns = c(5, 6), 
@@ -160,6 +214,79 @@ output$drill_diagn <- DT::renderDataTable(server = FALSE,{
   })
 
 
+esami_diagn <- reactive({
+diagnostica %>%
+    mutate(Nconf2 = as.numeric(gsub("^.{0,4}", "", Nconf))) %>% 
+    filter(annoiniz == 2022, 
+           prova == input$esam,
+           dtfine >= input$dateRangeEsam[1] & dtfine <= input$dateRangeEsam[2]) %>%
+    dplyr::select(Nconf2, verbale, codaz, numero_del_campione, dtinizio, dtfine, specie,
+                  materiale, prova, tecnica, "esito" = valore, Nconf)
+  })
+
+
+
+# observeEvent(input$do, {
+#   shiny::req(input$esam)
+#   shiny::req(input$dateRangeEsam)
+output$esami_diagn <- DT::renderDataTable(server = TRUE,{
+  
+  if (input$do == 0)
+    return()
+  
+  isolate({esami_diagn() %>% 
+    DT::datatable(
+      style = 'bootstrap',
+      rownames = FALSE,
+      selection = 'none',
+      colnames = c("Conferimento",#0
+                   "Verbale",#1
+                   "Codice Azienda",#2
+                   "Numero campione",#3
+                   "Data inizio",#4
+                   "Data fine",#5
+                   "Specie",#6
+                   "Materiale",#7
+                   "Prova",#8
+                   "Tecnica",#9
+                   "Esito",#10
+                   "Conferimento_0"),#11
+      options = list(
+        class = 'compact row-border',
+        dom = 'tip',
+        pageLength = 5,
+        order = list(list(3, 'asc')),
+        columnDefs = list(
+          #   list(orderData = 4, targets = 6),
+          #   list(orderData = 5, targets = 7),
+          #   list(orderData = 0, targets = 1),
+          #   list(orderData = 12, targets = 13),
+          list(visible = FALSE, targets = c(11))),
+        language = list(decimal = ",",
+                        thousands = ".",
+                        search = "Cerca: ",
+                        lengthMenu = "Mostra _MENU_ esami",
+                        paginate = list(previous = "Precedente", `next` = "Successiva"),
+                        info = "_START_ - _END_ di _TOTAL_ esami",
+                        infoFiltered = "(su un totale di _MAX_ esami)",
+                        infoEmpty = "Nessun esame disponibile",
+                        zeroRecords = "---")
+      )
+    ) %>% 
+    formatDate(
+      columns = c(5, 6), 
+      method =  "toLocaleDateString", 
+      params = list(
+        'it-IT', 
+        list(
+          year = 'numeric', 
+          month = 'numeric',
+          day = 'numeric')
+      )
+    )
+})
+})
+# })
 
 # #_________________________________________________________________________________________________
 

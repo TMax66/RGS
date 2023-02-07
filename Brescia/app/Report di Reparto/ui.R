@@ -14,15 +14,30 @@ tags$head(
       '
 
       #table_diagn .dataTables_info,
-      #drill_diagn .dataTables_info{
+      #drill_diagn .dataTables_info {
       float: left;
       margin-top: 50px;
       }   
 
       #table_diagn .dataTables_paginate,
-      #drill_diagn .dataTables_paginate{
+      #drill_diagn .dataTables_paginate {
       margin-top: 50px;
-      }    
+      }   
+      
+      #table_diagn th.sorting {
+      vertical-align: middle;
+      }
+      
+      #Dt1 th.sorting {
+      vertical-align: middle;
+      padding-left: 0px;
+      padding-right: 0px;
+      }
+      
+      #Dt1 td {
+      padding-left: 0px;
+      padding-right: 0px;
+      }
 
       
      /*.recalculating { opacity: inherit !important; }*/
@@ -33,7 +48,7 @@ tags$head(
       font-weight: 600;
       }
     
-      body {
+      body, table {
       font-family: Montserrat;
       }
       
@@ -55,6 +70,22 @@ tags$head(
       /*#table .rt-align-center {*/
       /*text-align: left;*/
       /*}*/
+      
+      #bttn1,
+      #bttn2 {
+      /*width:350px;*/
+      height: 44px;
+      border-radius: 50px;
+      background-color: #1f77b4;
+      }
+      
+      
+      #downloadEsam_bttn,
+      #downloadConf_bttn {
+      /*width:350px;*/
+      /*border-radius: 50%;*/
+      background-color: orange;
+      }
       
       ')
     )
@@ -107,17 +138,17 @@ tabsetPanel(
      br(),
      grillade(gutter = "xl",
               wellPanel(style = "margin-bottom: 0px; height:100%; width:100%",
-                        h3("SANITÀ ANIMALE", style = "text-align: center;"),
+                        h3("Sanità animale", style = "text-align: center;"),
          br(),
          dataTableOutput("thomeSA")
          ),
        wellPanel(style = "margin-bottom: 0px; height:100%; width:100%",
-                 h3("ALIMENTI UOMO", style = "text-align: center;"),
+                 h3("Alimenti uomo", style = "text-align: center;"),
          br(),
          dataTableOutput("thomeAU")
          ),
        wellPanel(style = "margin-bottom: 0px; height:100%; width:100%",
-                 h3("ALIMENTI ZOOTECNICI", style = "text-align: center;"),
+                 h3("Alimenti zootecnici", style = "text-align: center;"),
        br(),
        dataTableOutput("thomeAZ"))
        ),
@@ -139,7 +170,7 @@ tabPanel(
    value = "accettaz",
    br(),
    fluidPage( 
-     # useShinyjs(),
+      # useShinyjs(),
      # conditionalPanel(
      #             "false", # always hide the download button, because we will trigger it 
      #             downloadButton("downloadData") # programmatically with shinyjs
@@ -194,77 +225,14 @@ tabPanel(
    ),
 #LABORATORI----
 navbarMenu("Laboratori",
-
-           
-           # ##Lab Diagnostica Generale----
-           # tabPanel(
-           #   title = "Laboratorio Diagnostica Generale",
-           #   value = "labdiagnostica",
-           #   br(),
-           #   fluidPage(
-           #     fluidRow(style = "height:500px;",
-           #              column(5, style = "padding-left:0px;",
-           #                     wellPanel(style = "height:300px;    margin-bottom: 50px;",
-           #                               h3("Laboratorio di Diagnostica Generale", style = "margin-top: 10px; margin-bottom: 0px;"),
-           #                               br(),
-           #                               HTML("Esegue indagini su materiale patologico di animali ed alimenti zootecnici 
-           #          che comprendono esami anatomo-patologici, batteriologici, parassitologici, 
-           #          di biologia molecolare, esami specifici per la ricerca di micoplasmi, micobatteri 
-           #          e il virus della rabbia. L’attività svolta riguarda principalmente la sanità pubblica 
-           #          e la sanità animale di tutte le specie con particolare riferimento alle specie da 
-           #          reddito (bovini, suini e specie avicole), agli animali da compagnia e selvatici. 
-           #          Inoltre fornisce un supporto diagnostico all’utenza nell’interpretazione dei risultati 
-           #          delle indagini di laboratorio e nella loro applicazione in materia di programmi di 
-           #          profilassi diretta ed indiretta.")),
-           #                     #br(),
-           #                     wellPanel(style = "height:100px;",
-           #                               selectInput(inputId = "diagnos",
-           #                                           label = "Seleziona la prova",
-           #                                           choices = c("", levels(factor(diagnostica$prova))))
-           #                     )
-           #              ),
-           #              column(7, style = "padding-right:0px;",
-           #                     wellPanel(style = "height:450px;",
-           #                               plotlyOutput("Dp1")))
-           #     ),
-           #     #br(),
-           #     fluidRow(#style = "height:500px;",
-           #       column(5,
-           #              wellPanel(
-           #                tableOutput("Dt1"))),
-           #       column(7,
-           #              wellPanel(plotOutput("Dp2")
-           #              ))
-           #     ),
-           #     
-           #     fluidRow(
-           #       wellPanel(
-           #         dataTableOutput("SumDiagn"),
-           #         hr(),
-           #         br(),
-           #         dataTableOutput("ddrill")
-           #       )
-           #     )
-           #   )
-           #   
-           #   # h3(uiOutput("aggconf")),
-           #   # fluidRow(
-           #   #   br(),
-           #   #   downloadButton("downloadData", "Scarica i dati"),
-           #   #   DTOutput("conferimenti")
-           #   # )
-           #   
-           # ),
-           # 
-           # 
-           # 
-           #            
+      
 ##Lab Diagnostica Generale----
 tabPanel(
   title = "Laboratorio Diagnostica Generale",
   value = "labdiagnostica",
   br(),
   fluidPage(
+    useShinyjs(),
     style = "padding-right: 0px; padding-left: 0px;",
     grillade(gutter = "xl",
              wellPanel(style = "margin-bottom: 0px; height:100%;",#style = "margin-bottom: 50px;",
@@ -274,36 +242,44 @@ tabPanel(
                HTML("Esegue indagini su materiale patologico di animali ed alimenti zootecnici 
                     che comprendono esami anatomo-patologici, batteriologici, parassitologici, 
                     di biologia molecolare, esami specifici per la ricerca di micoplasmi, micobatteri 
-                    e il virus della rabbia. L’attività svolta riguarda principalmente la sanità pubblica 
+                    e il virus della rabbia.<br>L’attività svolta riguarda principalmente la sanità pubblica 
                     e la sanità animale di tutte le specie con particolare riferimento alle specie da 
-                    reddito (bovini, suini e specie avicole), agli animali da compagnia e selvatici. 
-                    Inoltre fornisce un supporto diagnostico all’utenza nell’interpretazione dei risultati 
+                    reddito (bovini, suini e specie avicole), agli animali da compagnia e selvatici.<br>Inoltre
+                    fornisce un supporto diagnostico all’utenza nell’interpretazione dei risultati 
                     delle indagini di laboratorio e nella loro applicazione in materia di programmi di 
                     profilassi diretta ed indiretta.")),
              knack(cols = 2,
              wellPanel(style = "margin-bottom: 0px; height:100%;",
+                       HTML("<div style='line-height:1.1;margin-top:10px;margin-bottom:0px;'>
+                             <span style='font-size:18px;vertical-align:middle;font-weight:600;'>Numero di esami eseguiti</span>
+                             <span style='font-size:14px;vertical-align:middle;'> (andamento settimanale)</span>
+                             </div>"),
+                       br(),
                plotlyOutput("Dp1")
              ))),
     br(),
     br(),
     grillade(gutter = 'xl',
+             n_col = 7, cols_width = c(3, 4),
 
-      wellPanel(style = "margin-bottom: 0px; height:100%;",
+      wellPanel(style = "margin-bottom: 0px; height:100%;", #height:100%;
                 uiOutput("head_Dt1"),
                 br(),
         dataTableOutput("Dt1")
         ),
-        wellPanel(style = "margin-bottom: 0px; height:100%",
+        wellPanel(style = "margin-bottom: 0px; height:100%;", #height:100%;
                   tags$div(
-                    tags$h4("Tempi medi di esecuzione", style = "font-weight: 600;"), 
+                    tags$h4("Tempo medio di esecuzione per tipo di prova", style = "font-weight: 600;"), 
                     tags$h5("(andamento settimanale)")
                   ),
                   br(),
+                  div(#style = "margin-top: 15px;",
           selectInput(inputId = "diagnos",
                       label = "Seleziona la prova",
-                      choices = c("", levels(factor(diagnostica$prova)))),
+                      choices = c("", levels(factor(diagnostica$prova))))),
           br(),
-          plotOutput("Dp2")
+          plotlyOutput("Dp2"#, height='500px'
+                       )
           )
         ),
     br(),
@@ -319,18 +295,122 @@ tabPanel(
     #     br(),
     #     plotlyOutput("plot_diagn"))),
     #     br(),
-        br(),
-        br(),
+    fluidRow(
+      column(width = 3, offset = 1,# align = "center",
+    actionBttn(
+      inputId = "bttn1",
+      label = "VEDI CONFERIMENTI",
+      color = "primary",
+      style = "material-flat",
+      block = TRUE
+      #icon = icon("sliders")
+    )),
+    column(1, align = "left",
+           downloadBttn(
+             label = NULL,
+             outputId = "downloadConf",
+             style = "material-circle",
+             color = "primary"
+             #block = TRUE
+           )),
+    column(width = 3, offset = 2,# align = "center",
+           actionBttn(
+      inputId = "bttn2",
+      label = div("VEDI ESAMI"
+                  #,icon("search")
+                  ),
+      color = "primary",
+      style = "material-flat",
+      block = TRUE
+      #icon = icon("sliders")
+    )),
+    column(1, align = "left",
+              downloadBttn(
+                label = NULL,
+                outputId = "downloadEsam",
+                style = "material-circle",
+                color = "primary"
+                #block = TRUE
+              ))),
+    br(),
+    br(),
+    shinyjs::hidden(
+      div(
+        id = "cp1",
+    conditionalPanel(
+      condition = "input.bttn1",
     grillade(n_col = 1,
-             wellPanel(
+             wellPanel(style = "margin-bottom: 0px; height:700px;",
                tags$div(
-                 tags$h4("TUTTI I CONFERIMENTI", style = "text-align:center;font-weight: 600;")
+                 tags$h4("TUTTI I CONFERIMENTI", style = "font-weight: 600;"),
+                 tags$h5("(seleziona il conferimento per vedere il dettaglio degli esami eseguiti)")
                ),
+               br(),
              uiOutput("table_diagno"),
              br(),
+             hr(style = "border-top: 1px solid black;"),
              br(),
              uiOutput("drill_diagno")))
-      
+    ))),
+    shinyjs::hidden(
+      div(
+        id = "cp2",
+    conditionalPanel(
+      condition = "input.bttn2",
+      grillade(n_col = 1,
+               wellPanel(style = "margin-bottom: 0px; height:700px;",
+                 # tags$div(
+                 #   tags$h4("TUTTI GLI ESAMI", style = "font-weight: 600;"),
+                 #   tags$h5("(seleziona il conferimento per vedere il dettaglio degli esami eseguiti)")
+                 # ),
+                 div(HTML("<div style='display: inline-block;vertical-align: middle;'>
+                             <h4 style='font-weight:600;'>TUTTI GLI ESAMI</h4>
+                             <h5> (seleziona <i class='fa-solid fa-gear fa-xl'></i> per selezionare i campi e visualizzare gli esami)</h5>
+                             </div>"),
+                     div(style='display: inline-block;vertical-align: middle;margin-left: 30px;',
+                     
+                 dropdownButton(
+                   
+                   #tags$h3("List of Inputs"),
+                   
+                   selectInput(inputId = 'esam',label = "Seleziona la prova",
+                               choices = c("", levels(factor(diagnostica$prova)))),
+                   
+                   dateRangeInput('dateRangeEsam',
+                                  label = 'Seleziona la data di fine analisi',
+                                  start = min(diagnostica$dtfine), #min(diagnostica$dtfine[diagnostica$prova == input$esam]),
+                                  end = max(diagnostica$dtfine),
+                                  format = "dd/mm/yyyy",
+                                  language = "it-IT",
+                                  separator = " a "),
+                   br(),
+                   div(style = "text-align: center;",
+                       actionButton("do",
+                                    label = div("Filtra esami", icon("play")),style = "color: white;background-color: #1f77b4;")
+                       ),
+                   #https://felixluginbuhl.com/scroller/
+                   
+                   circle = TRUE,
+                   status = "primary",
+                   icon = icon("gear"),
+                   width = "300px",
+                   #up = TRUE,
+                   right = FALSE
+                   #tooltip = tooltipOptions(title = "Click to see inputs !")
+                 ))),
+                 br(),
+                 dataTableOutput("esami_diagn"),
+                 br(),
+                 hr(style = "border-top: 1px solid black;")
+                 
+                 # uiOutput("table_diagno"),
+                 # br(),
+                 # hr(style = "border-top: 1px solid black;"),
+                 # br(),
+                 # uiOutput("drill_diagno")))
+    )
+      )
+    )))
     ) #chiude la fluidPage
   ), #chiude il tabPanel
     

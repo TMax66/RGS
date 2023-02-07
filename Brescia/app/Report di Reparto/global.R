@@ -12,6 +12,7 @@ library(rpivotTable)
 library(reactable)
 library(shinyjs)
 library(shinyWidgets)
+library(grillade)
 
 
 conf <- readRDS(here("Brescia", "data", "processed", "conf.RDS"))
@@ -19,8 +20,8 @@ prove <- readRDS(here("Brescia", "data", "processed", "prove.RDS"))
 
 conf <- conf %>%
   mutate(annoconf = year(dtconf), 
-         annoprel = year(dtprel), 
-         annoreg = year(dtreg),
+         # annoprel = year(dtprel), 
+         # annoreg = year(dtreg),
          weekconf = strftime(dtconf, format = "%U-%Y"))
 
 #per nascondere date mancanti plotly accettazione
@@ -32,7 +33,6 @@ date_breaks_acc <- as.character(date_range_acc[!date_range_acc %in% as.Date(conf
 
 
 # Preparazione dati----
-
 
 ## boxvalue homepage (n.conferimenti e n.esami per settore)
 
@@ -49,8 +49,29 @@ esami <- prove %>%
   summarise(n.esami = n())
 
 
-## Sezione laboratori----
-###lab sierologia ----
+# Sezione laboratori----
+## lab diagnostica ----
+
+diagnostica <- conf %>% 
+  # rename(ncamp_accettati = NrCampioni) %>%  
+  left_join(prove, by = c("anno", "Nconf")) %>% 
+  filter(#anno == 2022,
+         str_analisi == "Sede Territoriale di Brescia",
+         lab_analisi == "Laboratorio Diagnostica Generale") %>%
+  mutate(annoiniz = year(dtinizio),
+         anno_conf = sub(".*-","", weekconf),
+         sett_conf = as.numeric(sub("-.*","", weekconf)),
+         dtconf = as.Date(dtconf),
+         sett_inizio = as.Date(paste(anno_conf, sett_conf, 1, sep = "-"), "%Y-%U-%u"),
+         intervallo = paste("dal", format(sett_inizio, "%d/%m/%Y"),"al", format(sett_inizio + 6, "%d/%m/%Y"))) %>% 
+  filter(annoiniz == 2022)
+
+#per nascondere date mancanti plotly diagnostica
+date_range_diagn <- seq(min(as.Date(diagnostica$dtconf[diagnostica$annoconf == 2022])), max(as.Date(diagnostica$dtconf[diagnostica$annoconf == 2022])), by = 1) 
+date_breaks_diagn <- as.character(date_range_diagn[!date_range_diagn %in% as.Date(diagnostica$dtconf)])
+
+
+##lab sierologia ----
 # campioni accettati da Modena con prove effettuate dal lab di sierologia di Modena
 
 siero <- conf %>% 
@@ -64,26 +85,9 @@ siero <- conf %>%
       # )
 
 
-### lab diagnostica 
-# campioni accettati da Modena con prove effettuate dal lab di diagnostica di Modena
 
 
 
-diagnostica <- conf %>% 
-  #rename(ncamp_accettati = NrCampioni) %>%  
-  left_join(prove, by = c("anno", "nconf")) %>% 
-  filter(anno == 2022,
-         str_analisi == "Sede Territoriale di Brescia",
-         lab_analisi == "Laboratorio Diagnostica Generale") %>%
-  mutate(anno_conf = sub(".*-","", weekconf),
-         sett_conf = as.numeric(sub("-.*","", weekconf)),
-         dtconf = as.Date(dtconf),
-         sett_inizio = as.Date(paste(anno_conf, sett_conf, 1, sep = "-"), "%Y-%U-%u"),
-         intervallo = paste("dal", format(sett_inizio, "%d/%m/%Y"),"al", format(sett_inizio + 6, "%d/%m/%Y")))
-
-
-date_range_diagn <- seq(min(as.Date(diagnostica$dtconf[diagnostica$annoconf == 2022])), max(as.Date(diagnostica$dtconf[diagnostica$annoconf == 2022])), by = 1) 
-date_breaks_diagn <- as.character(date_range_diagn[!date_range_diagn %in% as.Date(diagnostica$dtconf)])
 ### lab biologia molecolare 
 # campioni accettati da Modena con prove effettuate dal lab di diagnostica di Modena
 # 

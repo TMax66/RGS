@@ -1,3 +1,4 @@
+
 server<-function(input, output, session) {
   
   # output$value1 <- renderText({
@@ -7,7 +8,7 @@ server<-function(input, output, session) {
   
 output$aggconf <- renderUI({
   paste0("Dati aggiornati al: ",
-         format(as.Date(substr(max(conf$dtconf, na.rm = TRUE),
+         format(as.Date(substr(max(diagnostica$dtconf, na.rm = TRUE), #conf$dtconf
                                start = 1, stop = 11)), "%d-%m-%Y")
          )
   })
@@ -117,13 +118,21 @@ output$table_diagno <- renderUI({
     # }
   })
 
+output$selconf <- renderUI({
+  sel_conf <- conf_diagn()[as.integer(input$table_diagn_rows_selected), ]$Nconf
+  selconf <- as.numeric(gsub("^.{0,4}", "", sel_conf))
+  paste0("CONFERIMENTO ", selconf," - DETTAGLIO PROVE ESEGUITE")
+})
+
+
 output$drill_diagno <- renderUI({
   if (length(input$table_diagn_rows_selected) > 0){
     #wellPanel(
     div(style = "margin-bottom: 100px;",
-      dataTableOutput("drill_diagn")
-    )
-    #  )
+        uiOutput("selconf", style = "font-weight: 600;font-size: 18px;margin-top: 10px;margin-bottom: 10px;"),
+        br(),
+        dataTableOutput("drill_diagn")
+        )
     }
   })
 
@@ -134,7 +143,7 @@ output$head_Dt1 <- renderUI({
        count()
   
   tags$div(
-    tags$h4("Esami eseguiti per tipo di prova", style = "font-weight: 600;"), 
+    tags$h4("Numero di esami e tempo medio di esecuzione", style = "font-weight: 600;"), 
     tags$h5(paste("(",n," esami totali"," - dati aggiornati al ",
                   format(as.Date(substr(max(diagnostica$dtconf, na.rm = TRUE),
                                         start = 1, stop = 11)), "%d-%m-%Y"),
@@ -142,7 +151,83 @@ output$head_Dt1 <- renderUI({
     )
 })
 
+observeEvent(input$bttn1,{
+  shinyjs::show("cp1")
+  shinyjs::hide("cp2")
+  runjs('
+      document.getElementById("table_diagno").scrollIntoView();
+    ')
+})
+observeEvent(input$bttn2,{
+  shinyjs::show("cp2")
+  shinyjs::hide("cp1")
+  runjs('
+      document.getElementById("esami_diagn").scrollIntoView();
+    ')
+})
 
+output$downloadConf <- downloadHandler(
+  filename = function() {
+    paste('Laboratorio di Diagnostica - conferimenti al ',
+          format(as.Date(substr(max(diagnostica$dtreg[diagnostica$annoiniz==2022], na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"),
+          '.xlsx',
+          sep='')
+  },
+  content = function(con) {
+    writexl::write_xlsx(
+      format_headers = FALSE,
+      diagnostica %>%
+        mutate(Nconf2 = as.numeric(gsub("^.{0,4}", "", Nconf)),
+               settore = as.factor(settore),
+               tipo_prelievo = as.factor(tipo_prelievo),
+               dtprel = format(as.Date(dtprel), "%d-%m-%Y"),
+               dtconf = format(as.Date(dtconf), "%d-%m-%Y"),
+               dtreg = format(as.Date(dtreg), "%d-%m-%Y")) %>%
+        distinct(Nconf, .keep_all = TRUE) %>%
+        filter(annoiniz == 2022) %>%
+        select('Conferimento' = Nconf2,
+               'Settore' = settore,
+               'Tipo prelievo' = tipo_prelievo,
+               "Finalità" = finalita,
+               "Data prelievo" = dtprel,
+               "Data conferimento" = dtconf,
+               "Data registrazione" = dtreg,
+               "Conferente" = conferente,
+               "Destinatario RdP" = dest_rdp,
+               "Campioni conferiti" = NrCampioni),
+      con)
+  }
+  )
+
+output$downloadEsam <- downloadHandler(
+  filename = function() {
+    paste('Laboratorio di Diagnostica - prove al ',
+          format(as.Date(substr(max(diagnostica$dtreg[diagnostica$annoiniz==2022], na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"),
+          '.xlsx',
+          sep='')
+  },
+  content = function(con) {
+    writexl::write_xlsx(
+      format_headers = FALSE,
+      diagnostica %>%
+        mutate(Nconf2 = as.numeric(gsub("^.{0,4}", "", Nconf)),
+               dtinizio = format(as.Date(dtinizio), "%d-%m-%Y"),
+               dtfine = format(as.Date(dtfine), "%d-%m-%Y")) %>% 
+        filter(annoiniz == 2022) %>%
+        dplyr::select("Conferimento" = Nconf2,
+                      "Verbale" = verbale,
+                      "Codice Azienda" = codaz,
+                      "Numero campione" = numero_del_campione,
+                      "Data inizio" = dtinizio,
+                      "Data fine" = dtfine,
+                      "Specie" = specie,
+                      "Materiale" = materiale,
+                      "Prova" = prova,
+                      "Tecnica" = tecnica,
+                      "Esito" = valore),
+      con)
+  }
+)
 
 
 

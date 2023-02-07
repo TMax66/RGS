@@ -49,7 +49,7 @@ coord <- coord %>%
   rename(COMUNE = DS_COMUNE)
 
 coord <- coord %>% 
-  slice_head(n = 3819)
+  slice_head(n = 3847)
 
 jo <- conf %>% 
   filter(settore == "Sanità Animale",
