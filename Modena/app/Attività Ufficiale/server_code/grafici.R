@@ -6,7 +6,7 @@ output$p1 <- renderPlotly({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022) %>% 
+      filter(annoconf == input$anno) %>% 
       distinct(nconf, .keep_all = TRUE) %>% 
       group_by(weekreg) %>% 
       count() %>% 
@@ -25,7 +25,7 @@ output$p1 <- renderPlotly({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022, settore == input$settore) %>% 
+      filter(annoconf == input$anno, settore == input$settore) %>% 
       distinct(nconf, .keep_all = TRUE) %>% 
       group_by(weekreg) %>% 
       count() %>% 

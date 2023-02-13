@@ -1,11 +1,15 @@
-ui <- navbarPage(
-  title = div(
-    # img(src = "logo-ausl-header.png",
-    #               id = "logo",
-    #               height = "40px", width = "40px",
-    #               style = "position: relative;margin:-15px 0px;right:8px;"),
-    "Attività ufficiale AUSL MODENA"),    
-  theme = bslib::bs_theme(3),
+ui <- tagList(navbarPageWithInputs(
+  "Attività ufficiale AUSL MODENA",    
+  #theme = bslib::bs_theme(3),
+  inputs = radioGroupButtons(
+    inputId = "anno",
+    label = NULL,
+    status = "primary",
+    choices = c("2022", "2023"),
+    selected = 2023,
+    individual = TRUE,
+    justified = FALSE
+  ),
   
   tags$head(
     # tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"),
@@ -13,6 +17,16 @@ ui <- navbarPage(
     tags$style(
       HTML(
         '
+    .navbar-form {
+      float: right;
+    /* height: 50px;*/
+    /* margin-top: 0px;*/
+    /* margin-bottom: 0px;*/
+    /* padding-right: 0px;*/
+    /* padding-left: 0px;*/
+    /* padding-top: 0px;*/
+      }  
+        
     /* ICONA FILTRO DATATABLE */
     input.form-control {
     font-family: Montserrat, Segoe UI Symbol;
@@ -262,7 +276,7 @@ ui <- navbarPage(
       
       fluidRow(style = "margin-left: 0px; margin-right: 0px;",
                column(12, align = "center",
-                      h3("Attività ufficiale anno 2022"),
+                      h3("Attività ufficiale"),
                       h5(uiOutput("aggdati")),
                       
                       br(),
@@ -369,16 +383,16 @@ ui <- navbarPage(
                  fluidRow(
                    column(4, style = "padding-left:0px;",
                           wellPanel(
-                            radioButtons(
-                              inputId = "anno",
-                              label = "Seleziona l'anno" ,
-                              choices =c("2021", "2022"),
-                              selected = "2022",
-                              inline = TRUE,
-                              width = NULL,
-                              choiceNames = NULL,
-                              choiceValues = NULL
-                            ),
+                            # radioButtons(
+                            #   inputId = "anno",
+                            #   label = "Seleziona l'anno" ,
+                            #   choices =c("2022", "2023"),
+                            #   selected = "2023",
+                            #   inline = TRUE,
+                            #   width = NULL,
+                            #   choiceNames = NULL,
+                            #   choiceValues = NULL
+                            # ),
                             selectInput(
                               inputId = "finalita", 
                               label = "Seleziona il tipo di campionamento", 
@@ -455,16 +469,16 @@ ui <- navbarPage(
     padding-bottom: 15px;",
                                            h4("Campionamenti",
                                               style = "margin-top: 0px;margin-bottom: 20px; font-weight: 700"),
-                                           radioButtons(
-                                             inputId = "anno4",
-                                             label = "Seleziona l'anno" ,
-                                             choices =c("2021", "2022"),
-                                             selected = "2022",
-                                             inline = TRUE,
-                                             width = NULL,
-                                             choiceNames = NULL,
-                                             choiceValues = NULL
-                                           ),
+                                           # radioButtons(
+                                           #   inputId = "anno",
+                                           #   label = "Seleziona l'anno" ,
+                                           #   choices =c("2022", "2023"),
+                                           #   selected = "2023",
+                                           #   inline = TRUE,
+                                           #   width = NULL,
+                                           #   choiceNames = NULL,
+                                           #   choiceValues = NULL
+                                           # ),
                                            selectInput(
                                              inputId = "finalitamappa", 
                                              label = "Seleziona il tipo di campionamento", 
@@ -504,16 +518,16 @@ ui <- navbarPage(
       fluidRow(
         column(4, style = "padding-left:0px;",
                wellPanel(
-                 radioButtons(
-                   inputId = "anno2",
-                   label = "Seleziona l'anno" ,
-                   choices =c("2021", "2022"),
-                   selected = "2022",
-                   inline = TRUE,
-                   width = NULL,
-                   choiceNames = NULL,
-                   choiceValues = NULL
-                 ),
+                 # radioButtons(
+                 #   inputId = "anno",
+                 #   label = "Seleziona l'anno" ,
+                 #   choices =c("2022", "2023"),
+                 #   selected = "2023",
+                 #   inline = TRUE,
+                 #   width = NULL,
+                 #   choiceNames = NULL,
+                 #   choiceValues = NULL
+                 # ),
                  selectInput(
                    inputId = "finalita2", 
                    label = "Seleziona il tipo di campionamento", 
@@ -545,16 +559,16 @@ ui <- navbarPage(
       fluidRow(
         column(4, style = "padding-left:0px;",
                wellPanel(
-                 radioButtons(
-                   inputId = "anno3",
-                   label = "Seleziona l'anno" ,
-                   choices =c("2021", "2022"),
-                   selected = "2022",
-                   inline = TRUE,
-                   width = NULL,
-                   choiceNames = NULL,
-                   choiceValues = NULL
-                 ),
+                 # radioButtons(
+                 #   inputId = "anno",
+                 #   label = "Seleziona l'anno" ,
+                 #   choices =c("2022", "2023"),
+                 #   selected = "2023",
+                 #   inline = TRUE,
+                 #   width = NULL,
+                 #   choiceNames = NULL,
+                 #   choiceValues = NULL
+                 # ),
                  selectInput(
                    inputId = "finalita3", 
                    label = "Seleziona il tipo di campionamento", 
@@ -576,4 +590,5 @@ ui <- navbarPage(
       )
     )
   )
+)
 )

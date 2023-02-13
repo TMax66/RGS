@@ -1,10 +1,10 @@
 azot <- reactive({
   if(input$finalita3 == "Tutte le finalità") {
     confAZ %>% 
-      filter(anno == input$anno3)
+      filter(anno == input$anno)
   } else {
     confAZ %>% 
-      filter(anno == input$anno3, finalita == input$finalita3)
+      filter(anno == input$anno, finalita == input$finalita3)
   }
 })
 
@@ -84,7 +84,7 @@ select_aslaz <- summaryazot()[as.integer(input$t1AZ_rows_selected), ]$ASL
 
 if(select_aslaz == "TOTALE AUSL"){  
   confAZ %>%
-    filter(finalita == input$finalita3, anno == input$anno3) %>%
+    filter(finalita == input$finalita3, anno == input$anno) %>%
     left_join(proveAZ, by = c("nconf")) %>%
     mutate(dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
            dtfine_chr = format(dtfine, "%d/%m/%Y"),
@@ -178,7 +178,7 @@ if(select_aslaz == "TOTALE AUSL"){
 
 } else {
   confAZ %>%
-    filter(ASL == select_aslaz, finalita == input$finalita3, anno == input$anno3) %>%
+    filter(ASL == select_aslaz, finalita == input$finalita3, anno == input$anno) %>%
     left_join(proveAZ, by = c("nconf")) %>%
     mutate(dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
            dtfine_chr = format(dtfine, "%d/%m/%Y"),

@@ -1,10 +1,10 @@
 alimenti <- reactive({
   if(input$finalita2 == "Tutte le finalità") {
     confSicA %>% 
-      filter(anno == input$anno2)
+      filter(anno == input$anno)
   } else {
     confSicA %>% 
-      filter(anno == input$anno2, finalita == input$finalita2)
+      filter(anno == input$anno, finalita == input$finalita2)
   }
 })
 
@@ -84,7 +84,7 @@ select_aslalim <- summaryalim()[as.integer(input$t1SicA_rows_selected), ]$ASL
 
 if(select_aslalim == "TOTALE AUSL"){  
   confSicA %>%
-    filter(finalita == input$finalita2, anno == input$anno2) %>%
+    filter(finalita == input$finalita2, anno == input$anno) %>%
     left_join(proveSicA, by = c("nconf")) %>%
     mutate(dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
            dtfine_chr = format(dtfine, "%d/%m/%Y"),
@@ -175,7 +175,7 @@ if(select_aslalim == "TOTALE AUSL"){
   
 } else {
   confSicA %>%
-    filter(ASL == select_aslalim, finalita == input$finalita2, anno == input$anno2) %>%
+    filter(ASL == select_aslalim, finalita == input$finalita2, anno == input$anno) %>%
     left_join(proveSicA, by = c("nconf")) %>%
     mutate(dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
            dtfine_chr = format(dtfine, "%d/%m/%Y"),

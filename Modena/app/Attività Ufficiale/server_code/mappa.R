@@ -222,7 +222,7 @@ observeEvent(
 
 campmappa <- reactive({
   confSA %>% 
-    filter(anno == input$anno4, finalita == input$finalitamappa) %>%
+    filter(anno == input$anno, finalita == input$finalitamappa) %>%
     mutate(codaz = toupper(codaz)) %>%  
     left_join(coordbv, by = "codaz")
   
@@ -295,14 +295,14 @@ observeEvent( #cliccando genera mappa produce la mappa con gli allevamenti contr
                                              c('5', '25', '50', '100', 'Tutti')),
                            buttons = list(
                              list(extend = "excel", text = "Scarica Tutto",
-                                  filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno4, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
+                                  filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
                                   title = NULL,
                                   titleAttr = "Excel",
                                   exportOptions = list(
                                     modifier = list(page = "all"),
                                     columns = c(1,2,3,5,7,8,10))),
                              list(extend = "excel", text = "Scarica Selezione",
-                                  filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno4, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
+                                  filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
                                   title = NULL,
                                   titleAttr = "Excel",
                                   exportOptions = list(
@@ -340,7 +340,7 @@ observeEvent(
   input$unprot2,
   {
     
-    reset("anno4")# cancella l'input codice
+    reset("anno")# cancella l'input codice
     reset("finalitamappa")#cancella l'input slider
     
     removeUI("#mappacamp") #cancella la tabella ...
@@ -395,14 +395,14 @@ observeEvent(
 #                                   c('5', '25', '50', '100', 'Tutti')),
 #                 buttons = list(
 #                   list(extend = "excel", text = "Scarica Tutto",
-#                        filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno4, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
+#                        filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
 #                        title = NULL,
 #                        titleAttr = "Excel",
 #                        exportOptions = list(
 #                          modifier = list(page = "all"),
 #                          columns = c(1,2,3,5,7,8,10))),
 #                   list(extend = "excel", text = "Scarica Selezione",
-#                        filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno4, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
+#                        filename = paste0(input$finalitamappa, " - attività ufficiale ", input$anno, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),
 #                        title = NULL,
 #                        titleAttr = "Excel",
 #                        exportOptions = list(
