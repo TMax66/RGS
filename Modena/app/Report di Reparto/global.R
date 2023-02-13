@@ -10,6 +10,7 @@ library(gt)
 library(janitor)
 library(rpivotTable)
 library(reactable)
+library(shinyWidgets)
 library(shinyjs)
 
 
@@ -46,7 +47,7 @@ summarise(n.esami = n())
 siero <- conf %>% 
   rename(ncamp_accettati = NrCampioni) %>%  
   left_join(prove, by = c("anno", "nconf")) %>% 
-  filter(anno == 2022,
+  filter(#anno == input$selanno,
           proveINOUT == "in_sede", 
           lab_analisi == "Laboratorio Sierologia")
           
@@ -60,7 +61,7 @@ siero <- conf %>%
 diagnostica <- conf %>% 
   rename(ncamp_accettati = NrCampioni) %>%  
   left_join(prove, by = c("anno", "nconf")) %>% 
-  filter( anno == 2022,
+  filter( #anno == input$selanno,
           str_analisi == "Sede Territoriale di Modena",
           lab_analisi == "Laboratorio Diagnostica Generale")
 
@@ -71,7 +72,7 @@ diagnostica <- conf %>%
 biomol <- conf %>% 
   rename(ncamp_accettati = NrCampioni) %>%  
   left_join(prove, by = c("anno", "nconf")) %>% 
-  filter( anno == 2022,
+  filter( #anno == input$selanno,
           str_analisi == "Sede Territoriale di Modena",
           lab_analisi == "Laboratorio Biologia molecolare")
 
@@ -81,7 +82,7 @@ biomol <- conf %>%
 alimenti <- conf %>% 
   rename(ncamp_accettati = NrCampioni) %>%  
   left_join(prove, by = c("anno", "nconf")) %>% 
-  filter( anno == 2022,
+  filter( #anno == input$selanno,
           str_analisi == "Sede Territoriale di Modena",
           lab_analisi == "Laboratorio Microbiologia degli Alimenti")
 
@@ -91,7 +92,7 @@ alimenti <- conf %>%
 ricerca <-   conf %>% 
   rename(ncamp_accettati = NrCampioni) %>%  
   left_join(prove, by = c("anno", "nconf")) %>%  
-  filter( anno == 2022,
+  filter(# anno == input$selanno,
           str_analisi == "Sede Territoriale di Modena", 
           str_detect(finalita, "Progett"))
 
@@ -128,4 +129,12 @@ valueBox <- function(value, subtitle, icon, color) {
   )
 }
 
+
+navbarPageWithInputs <- function(..., inputs) {
+  navbar <- navbarPage(...)
+  form <- tags$form(class = "navbar-form", inputs)
+  navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+    navbar[[4]][[1]][[1]]$children[[1]], form)
+  navbar
+}
   

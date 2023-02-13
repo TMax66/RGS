@@ -13,7 +13,7 @@ fgacc <- reactive({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022) %>% 
+      filter(annoconf == input$selanno) %>% 
       distinct(nconf, .keep_all = TRUE) %>% 
       group_by(weekreg) %>% 
       count() %>% 
@@ -25,7 +25,7 @@ fgacc <- reactive({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022, settore == input$settore) %>% 
+      filter(annoconf == input$selanno, settore == input$settore) %>% 
       distinct(nconf, .keep_all = TRUE) %>% 
       group_by(weekreg) %>% 
       count() %>% 
@@ -61,7 +61,7 @@ confacc <- reactive({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022)
+      filter(annoconf == input$selanno)
       
   } else { 
     conf %>% 
@@ -69,7 +69,7 @@ confacc <- reactive({
              annoprel = year(dtprel), 
              annoreg = year(dtreg),
              weekreg = week(dtreg)) %>% # <-  queste righe vanno poi messe in ETL
-      filter(annoconf == 2022, settore == input$settore)
+      filter(annoconf == input$selanno, settore == input$settore)
       
   }
 })
@@ -107,6 +107,7 @@ output$Sp1 <- renderPlotly({
   #req(input$prove)
 
     siero %>% 
+    filter(anno == input$selanno) %>% 
       #group_by(prova, tecnica, dtinizio) %>% 
     mutate(sett = week(dtinizio)) %>% 
       group_by(sett) %>% 
@@ -127,7 +128,8 @@ output$Sp1 <- renderPlotly({
  
 output$Sp2 <- renderPlot({   
 siero %>%
-    mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400), 
+    filter(anno == input$selanno) %>% 
+      mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400), 
            week = week(dtfine)) %>%
   group_by(prova, tecnica,week) %>% 
   summarise(tmesec = round(mean(tempo_esecuzione, na.rm = TRUE),1)) %>% 
@@ -150,6 +152,7 @@ output$Dp1 <- renderPlotly({
   #req(input$prove)
 
   diagnostica %>%
+    filter(anno == input$selanno) %>%
     mutate(sett = week(dtinizio)) %>% 
     group_by(sett) %>% 
     count() %>% 
@@ -170,6 +173,7 @@ output$Dp1 <- renderPlotly({
 output$Dp2 <- renderPlot({
   req(input$diagnos)
   diagnostica %>%
+    filter(anno == input$selanno) %>%
     mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400),
            week = week(dtfine)) %>%
     group_by(prova, week) %>%
@@ -192,6 +196,7 @@ output$MAp1 <- renderPlotly({
   #req(input$prove)
   
   alimenti %>%
+    filter(anno == input$selanno) %>%
     mutate(sett = week(dtinizio)) %>% 
     group_by(sett) %>% 
     count() %>% 
@@ -212,6 +217,7 @@ output$MAp1 <- renderPlotly({
 output$MAp2 <- renderPlot({
   req(input$microalim)
   alimenti %>%
+    filter(anno == input$selanno) %>%
     mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400),
            week = week(dtfine)) %>%
     group_by(prova, week) %>%
@@ -234,6 +240,7 @@ output$bmp1 <- renderPlotly({
   #req(input$prove)
   
   biomol %>%
+    filter(anno == input$selanno) %>%
     mutate(sett = week(dtinizio)) %>% 
     group_by(sett) %>% 
     count() %>% 
@@ -254,6 +261,7 @@ output$bmp1 <- renderPlotly({
 output$bmp2 <- renderPlot({
   req(input$biomolec)
   biomol %>%
+    filter(anno == input$selanno) %>%
     mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400),
            week = week(dtfine)) %>% 
     filter(tempo_esecuzione >= 0) %>% 
