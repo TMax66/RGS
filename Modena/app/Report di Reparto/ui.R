@@ -1,7 +1,39 @@
-ui <- navbarPage(
-  title = "IZSLER Sede Territoriale di Modena",
+ui <- tagList(navbarPageWithInputs(
+  "IZSLER Sede Territoriale di Modena",
+  #position = c("fixed-top"),
+  inputs = radioGroupButtons(
+    inputId = "selanno",
+    label = NULL,
+    status = "primary",
+    choices = c("2022", "2023"),
+    individual = TRUE,
+    justified = FALSE,
+    selected = 2023
+  ),
  # theme = bslib::bs_theme(4),
- 
+ tags$head(
+   # tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"),
+   # tags$link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css", integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=", crossorigin="anonymous"),
+   tags$style(
+     HTML(
+       '
+     .navbar-nav{display:flex}
+     .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 10px;
+}
+     
+     .navbar-nav a {padding-left:0px}
+      .navbar-form {
+        position: absolute;
+    
+    right: 0;
+      }
+
+      ')
+   )
+ ),
  #home----
  
  tabPanel(
@@ -337,54 +369,54 @@ tabPanel(
    # )
 # ),
  
- #laboratorio qualità----
- 
- tabPanel(
-   title = "Qualità",
-   value = "qualità",
-   # h3(uiOutput("aggconf")),
-   # fluidRow(
-   #   br(),
-   #   downloadButton("downloadData", "Scarica i dati"),
-   #   DTOutput("conferimenti")
-   # )
- ),
-   
-   
-   # Attività Ufficiale
-   
-   tabPanel(
-     title = "Attività Ufficiale",
-     value = "attuff"
-     # h3(uiOutput("aggconf")),
-     # fluidRow(
-     #   br(),
-     #   downloadButton("downloadData", "Scarica i dati"),
-     #   DTOutput("conferimenti")
-     # )
-   ),
-   
-   
-   
- 
- #laboratorio autocontrollo-----
- tabPanel(
-   title = "Attività per Autocontrollo",
-   value = "autocontrollo"
-   # h3(uiOutput("aggconf")),
-   # fluidRow(
-   #   br(),
-   #   downloadButton("downloadData", "Scarica i dati"),
-   #   DTOutput("conferimenti")
-   # )
- ),
- 
-
- #Attività di ricerca-----
- tabPanel(
-   title = "Attività  di ricerca",
-   value = "autocontrollo"
- ),
+ # #laboratorio qualità----
+ # 
+ # tabPanel(
+ #   title = "Qualità",
+ #   value = "qualità",
+ #   # h3(uiOutput("aggconf")),
+ #   # fluidRow(
+ #   #   br(),
+ #   #   downloadButton("downloadData", "Scarica i dati"),
+ #   #   DTOutput("conferimenti")
+ #   # )
+ # ),
+ #   
+ #   
+ #   # Attività Ufficiale
+ #   
+ #   tabPanel(
+ #     title = "Attività Ufficiale",
+ #     value = "attuff"
+ #     # h3(uiOutput("aggconf")),
+ #     # fluidRow(
+ #     #   br(),
+ #     #   downloadButton("downloadData", "Scarica i dati"),
+ #     #   DTOutput("conferimenti")
+ #     # )
+ #   ),
+ #   
+ #   
+ #   
+ # 
+ # #laboratorio autocontrollo-----
+ # tabPanel(
+ #   title = "Attività per Autocontrollo",
+ #   value = "autocontrollo"
+ #   # h3(uiOutput("aggconf")),
+ #   # fluidRow(
+ #   #   br(),
+ #   #   downloadButton("downloadData", "Scarica i dati"),
+ #   #   DTOutput("conferimenti")
+ #   # )
+ # ),
+ # 
+ # 
+ # #Attività di ricerca-----
+ # tabPanel(
+ #   title = "Attività  di ricerca",
+ #   value = "autocontrollo"
+ # ),
 
 #Tabella pivot----
 tabPanel(
@@ -427,4 +459,5 @@ tabPanel(
   #   fluidRow(
   #   )
   # )
+)
 )

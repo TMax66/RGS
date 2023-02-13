@@ -26,6 +26,7 @@ library(tidyverse)
 library(htmltools)
 library(showtext)
 library(shinyjs)
+library(shinyWidgets)
 font_families()
 font_add_google("Montserrat", "Montserrat")
 showtext_auto()
@@ -199,3 +200,13 @@ valueBox <- function(value, subtitle, icon, color) {
       )
   )
 }
+
+
+navbarPageWithInputs <- function(..., inputs) {
+  navbar <- navbarPage(...)
+  form <- tags$form(class = "navbar-form", inputs)
+  navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+    navbar[[4]][[1]][[1]]$children[[1]], form)
+  navbar
+}
+

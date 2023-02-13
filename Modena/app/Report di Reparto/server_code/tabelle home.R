@@ -1,7 +1,7 @@
 confHSA<- reactive(conf %>% 
                    rename(ncamp_accettati = NrCampioni) %>% 
                    distinct(Nconf, .keep_all = TRUE) %>%
-                   filter(anno == 2022, 
+                   filter(anno == input$selanno, 
                    settore == "Sanità Animale") )
 
 
@@ -30,7 +30,7 @@ output$thomeSA<-renderTable(
 confHAU <-  reactive(conf %>%
   distinct(Nconf, .keep_all = TRUE) %>% 
   rename(ncamp_accettati = NrCampioni) %>% 
-  filter(anno == 2022, settore == "Alimenti Uomo")
+  filter(anno == input$selanno, settore == "Alimenti Uomo")
 )
 
 output$thomeAU <-renderTable( 
@@ -56,7 +56,7 @@ confHAU() %>%
 confHAZ <- reactive(conf %>%
                     rename(ncamp_accettati = NrCampioni) %>%
                     distinct(Nconf, .keep_all = TRUE) %>%
-                    filter(anno == 2022, settore == "Alimenti Zootecnici"))
+                    filter(anno == input$selanno, settore == "Alimenti Zootecnici"))
 
 output$thomeAZ <- renderTable(
 

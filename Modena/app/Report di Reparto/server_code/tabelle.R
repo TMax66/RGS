@@ -5,25 +5,27 @@
 
 
 # Laboratorio sierologia----------------------------------------------------------------------------
-dtS<-reactive(siero %>%  
+dtS<-reactive({siero %>% 
+                filter(anno == input$selanno) %>% 
   group_by( prova, tecnica) %>% 
-  count()
-)
-
-
-
-output$St1 <- renderTable(
-  dtS() %>% 
+  count()%>% 
     
   bind_cols(  
     
   siero %>%
+    filter(anno == input$selanno) %>%
   mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400)) %>% 
   group_by(prova, tecnica) %>%
   summarise(tmesec = round(mean(tempo_esecuzione, na.rm = TRUE),1)) %>% ungroup() %>% 
   dplyr::select("tempo medio di esecuzione (gg)" = tmesec)
   
-  ) %>% 
+  )
+  })
+
+
+
+output$St1 <- renderTable(
+  dtS()  %>% 
 adorn_totals(col = 3) %>% 
   gt()
 
@@ -33,13 +35,13 @@ adorn_totals(col = 3) %>%
 
 
 ## tabella principale di sintesi----
-summary_Siero <- siero %>% distinct(nconf, .keep_all = TRUE) %>% 
+summary_Siero <- reactive({siero %>% filter(anno == input$selanno) %>% distinct(nconf, .keep_all = TRUE) %>% 
   dplyr::select(nconf, finalita, dtprel, dtconf, dtreg, specie, materiale, conferente, proprietario, veterinario, codaz, comune, ncamp_accettati)
-
+})
 
    
 
-output$SumSiero <- DT::renderDataTable(summary_Siero, 
+output$SumSiero <- DT::renderDataTable(summary_Siero(), 
                                        server = TRUE, 
                                        rownames = FALSE,
                                        options = list(
@@ -55,7 +57,7 @@ Sdrill <- reactive({
   
   select_conf <- summary_Siero[as.integer(input$SumSiero_rows_selected), ]$nconf
   
-  siero %>% filter(nconf == select_conf) %>% 
+  siero %>% filter(nconf == select_conf, anno == input$selanno) %>% 
     dplyr::select(nconf, codaz, prova, tecnica, dtinizio, dtfine, numero_del_campione, "esito" = valore)
 })
 
@@ -71,19 +73,15 @@ output$sdrill <- DT::renderDataTable(Sdrill(),
 #Laboratorio Diagnostica Generale----
 
  
-dtD<-reactive(diagnostica %>%  
+dtD<-reactive({diagnostica %>%  
+    filter(anno == input$selanno) %>%
                 group_by( prova) %>% 
-                count()
-)
-
-
-
-output$Dt1 <- renderTable(
-  dtD() %>% 
+                count()%>% 
     
     bind_cols(  
       
       diagnostica %>%
+        filter(anno == input$selanno) %>%
         mutate(tempo_esecuzione = as.numeric((dtfine-dtreg)/86400)) %>% 
         group_by(prova) %>%
         summarise(tmesec = round(mean(tempo_esecuzione, na.rm = TRUE),1)) %>% ungroup() %>% 
@@ -91,7 +89,13 @@ output$Dt1 <- renderTable(
       
     ) %>% 
     top_n(30) %>% 
-    arrange(desc(n)) %>% 
+    arrange(desc(n))
+})
+
+
+
+output$Dt1 <- renderTable(
+  dtD()  %>% 
     adorn_totals(col = 2) %>% 
     gt()
   
@@ -99,13 +103,13 @@ output$Dt1 <- renderTable(
 
 
 ## tabella principale di sintesi----
-summary_Diagnostica <- diagnostica %>% distinct(nconf, .keep_all = TRUE) %>% 
+summary_Diagnostica <- reactive({diagnostica %>% filter(anno == input$selanno) %>% distinct(nconf, .keep_all = TRUE) %>% 
   dplyr::select(nconf, finalita, dtprel, dtconf, dtreg, specie, materiale, conferente, proprietario, veterinario, codaz, comune, ncamp_accettati)
+})
 
 
 
-
-output$SumDiagn <- DT::renderDataTable(summary_Diagnostica, 
+output$SumDiagn <- DT::renderDataTable(summary_Diagnostica(), 
                                        server = TRUE, 
                                        rownames = FALSE,
                                        options = list(
@@ -121,7 +125,7 @@ Ddrill <- reactive({
   
   select_conf <- summary_Diagnostica[as.integer(input$SumDiagn_rows_selected), ]$nconf
   
-  diagnostica %>% filter(nconf == select_conf) %>% 
+  diagnostica %>% filter(nconf == select_conf, anno == input$selanno) %>% 
     dplyr::select(nconf, codaz, prova, tecnica, dtinizio, dtfine, numero_del_campione, "esito" = valore)
 })
 
@@ -136,15 +140,10 @@ output$ddrill <- DT::renderDataTable(Ddrill(),
 #_________________________________________________________________________________________________
 #Laboratorio Microbiologia Alimenti----
 
-dtA<-reactive(alimenti %>%  
+dtA<-reactive({alimenti %>% 
+    filter(anno == input$selanno) %>% 
                 group_by( prova ) %>% 
-                count()
-)
-
-
-
-output$MAt1 <- renderTable(
-  dtA() %>% 
+                count()%>% 
     
     bind_cols(  
       
@@ -156,7 +155,13 @@ output$MAt1 <- renderTable(
       
     ) %>% 
     top_n(30) %>% 
-    arrange(desc(n)) %>% 
+    arrange(desc(n))
+})
+
+
+
+output$MAt1 <- renderTable(
+  dtA()  %>% 
     adorn_totals(col = 2) %>% 
     gt()
   
@@ -164,13 +169,13 @@ output$MAt1 <- renderTable(
 
 
 ## tabella principale di sintesi----
-summary_alimenti <- alimenti %>% distinct(nconf, .keep_all = TRUE) %>% 
+summary_alimenti <- reactive({alimenti %>% filter(anno == input$selanno) %>% distinct(nconf, .keep_all = TRUE) %>% 
   dplyr::select(nconf, finalita, dtprel, dtconf, dtreg, specie, materiale, conferente, proprietario, veterinario, codaz, comune, ncamp_accettati)
 
+})
 
 
-
-output$SumMA <- DT::renderDataTable(summary_alimenti, 
+output$SumMA <- DT::renderDataTable(summary_alimenti(), 
                                        server = TRUE, 
                                        rownames = FALSE,
                                        options = list(
@@ -186,7 +191,7 @@ MAdrill <- reactive({
   
   select_conf <- summary_alimenti[as.integer(input$SumMA_rows_selected), ]$nconf
   
-  alimenti %>% filter(nconf == select_conf) %>% 
+  alimenti %>% filter(nconf == select_conf, anno == input$selanno) %>% 
     dplyr::select(nconf, codaz, prova, tecnica, dtinizio, dtfine, numero_del_campione, "esito" = valore)
 })
 
@@ -203,15 +208,10 @@ output$madrill <- DT::renderDataTable(MAdrill(),
 #_________________________________________________________________________________________________
 #Laboratorio Biologia Molecolare----
 
-dtbiom<-reactive(biomol %>%  
+dtbiom<-reactive({biomol %>%  
+    finlter(anno == input$selanno) %>% 
                 group_by( prova) %>% 
-                count()
-)
-
-
-
-output$bmt1 <- renderTable({   
-  dtbiom() %>% 
+                count() %>% 
     
     bind_cols(  
       
@@ -225,7 +225,13 @@ output$bmt1 <- renderTable({
     ) %>% 
     filter(`tempo medio di esecuzione (gg)` >= 0) %>% 
     top_n(30) %>% 
-    arrange(desc(n)) %>%  
+    arrange(desc(n))
+  })
+
+
+
+output$bmt1 <- renderTable({   
+  dtbiom() %>%  
     adorn_totals(col = 2)%>% 
     gt()
   
@@ -233,13 +239,13 @@ output$bmt1 <- renderTable({
 })
 
 ## tabella principale di sintesi----
-summary_biomol <- biomol %>% distinct(nconf, .keep_all = TRUE) %>% 
+summary_biomol <- reactive({biomol %>% filter(anno == input$selanno) %>% distinct(nconf, .keep_all = TRUE) %>% 
   dplyr::select(nconf, finalita, dtprel, dtconf, dtreg, specie, materiale, conferente, proprietario, veterinario, codaz, comune, ncamp_accettati)
 
+})
 
 
-
-output$Sumbm <- DT::renderDataTable(summary_biomol, 
+output$Sumbm <- DT::renderDataTable(summary_biomol(), 
                                     server = TRUE, 
                                     rownames = FALSE,
                                     options = list(
@@ -255,7 +261,7 @@ biomoldrill <- reactive({
   
   select_conf <- summary_biomol[as.integer(input$Sumbm_rows_selected), ]$nconf
   
-  biomol %>% filter(nconf == select_conf) %>% 
+  biomol %>% filter(nconf == select_conf, anno == selanno) %>% 
     dplyr::select(nconf, codaz, prova, tecnica, dtinizio, dtfine, numero_del_campione, "esito" = valore)
 })
 

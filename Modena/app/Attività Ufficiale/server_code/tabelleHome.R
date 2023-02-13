@@ -4,7 +4,7 @@
 
 confHSA <- reactive(
   conf %>%
-    filter(anno == 2022, settore == "Sanità Animale")
+    filter(anno == input$anno, settore == "Sanità Animale")
   )
 
 output$t1 <- renderTable(align = "lrrrrr",
@@ -56,7 +56,7 @@ output$t1 <- renderTable(align = "lrrrrr",
 ## Tabella Alimenti Uomo----
 
 confHAU <- reactive(
-  conf %>% filter(anno == 2022, settore == "Alimenti Uomo")
+  conf %>% filter(anno == input$anno, settore == "Alimenti Uomo")
   )
 
 output$t2 <- renderTable(align = "lrrrrr",
@@ -106,7 +106,7 @@ output$t2 <- renderTable(align = "lrrrrr",
 ## Tabella Alimenti Zootecnici----
 
 confHAZ <- reactive(
-  conf %>% filter(anno == 2022, settore == "Alimenti Zootecnici")
+  conf %>% filter(anno == input$anno, settore == "Alimenti Zootecnici")
   )
 
 output$t3 <- renderTable(align = "lrrrrr",
