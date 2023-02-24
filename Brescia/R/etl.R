@@ -61,18 +61,18 @@ conferimenti %>%
          codaz = casefold(codaz, upper = TRUE),
          Nconf = paste0(annoreg, nconf)) %>%
   distinct(Nconf, .keep_all = TRUE) %>% 
-  select(-finalita) %>% 
+  dplyr::select(-finalita) %>% 
   left_join(
     conferimenti %>%
       distinct() %>% 
       mutate(anno = year(dtconf),
              annoreg = year(dtreg),
              Nconf = paste0(annoreg, nconf)) %>% 
-      select(Nconf, finalita) %>% 
+      dplyr::select(Nconf, finalita) %>% 
       distinct() %>% 
       pivot_wider(names_from = "finalita", values_from = "finalita") %>%  
       unite("finalita", 2:73, na.rm = TRUE, remove = FALSE) %>% 
-      select(1,2), by = "Nconf") %>% 
+      dplyr::select(1,2), by = "Nconf") %>% 
   saveRDS(file = here("Brescia", "data", "processed", "conf.RDS"))
   
 #prove <- readRDS(here("data", "processed", "prove.RDS"))
