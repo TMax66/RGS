@@ -54,7 +54,8 @@ output$tcode <- renderUI({
   
   wellPanel(
     fluidRow(
-      dataTableOutput("t3SA")
+      column(12,
+             dataTableOutput("t3SA"))
       )
     )
   })
@@ -64,7 +65,8 @@ output$tcodedrill <- renderUI({
   
   wellPanel(
     fluidRow(
-      dataTableOutput("cadrill")
+      column(12,
+             dataTableOutput("cadrill"))
       )
     )
   })

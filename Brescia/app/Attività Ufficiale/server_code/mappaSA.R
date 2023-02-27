@@ -268,8 +268,9 @@ observeEvent(
 
 
 campmappa <- reactive({
-  confSA %>% 
-    filter(anno == input$selanno, finalita == input$finalitamappa) %>%
+  proveSA %>%
+    distinct(Nconf, .keep_all = TRUE) %>% 
+    filter(annoiniz == input$selanno, finalita == input$finalitamappa) %>%
     mutate(codaz = toupper(codaz)) %>%  
     left_join(coordbv, by = "codaz")
   
@@ -337,14 +338,14 @@ observeEvent( #cliccando genera mappa produce la mappa con gli allevamenti contr
                          filter = c('top'),
                          callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
                          options = list(
-                           order = list(list(0, 'desc')),
+                           order = list(list(6, 'desc')),
                            dom = 'Brltip', #irltp
                            scrollX = TRUE,
                            searching = TRUE,
                            autoWidth = TRUE,
                            pageLength = 5,
-                           lengthMenu = list(c(5, 25, 50, 100, -1), 
-                                             c('5', '25', '50', '100', 'Tutti')),
+                           lengthMenu = list(c(5, 25, 50, -1), 
+                                             c('5', '25', '50', 'Tutti')),
                            buttons = list(
                              list(extend = "excel", text = "Scarica Tutto",
                                   filename = paste0(input$finalitamappa, " - attività ufficiale ", input$selanno, " (dati aggiornati al ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), ")"),

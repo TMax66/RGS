@@ -1,10 +1,10 @@
 campionamento <- reactive({
   if(input$finalita == "Tutte le finalità") {
-    confSA %>% 
-      filter(anno == input$selanno)
+    proveSA %>% 
+      filter(annoiniz == input$selanno)
   } else {
-    confSA %>% 
-      filter(anno == input$selanno, finalita == input$finalita)
+    proveSA %>% 
+      filter(annoiniz == input$selanno, finalita == input$finalita)
   }
 })
 
@@ -12,39 +12,86 @@ campionamento <- reactive({
 #tabella summary ----
 
 summaryCamp <- reactive({  
-    campionamento() %>% 
-      group_by(ASL) %>% 
-      # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>% 
-      distinct(Nconf, .keep_all = TRUE) %>% 
-      summarise('Controlli effettuati' = n()) %>% 
-      
-      bind_cols(
-        campionamento() %>% 
-          group_by(ASL) %>% 
-          # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
-          distinct(Nconf, .keep_all = TRUE) %>%  
-          summarise('Campioni conferiti' = sum(NrCampioni)) %>%
-          ungroup() %>% 
-          dplyr::select('Campioni conferiti')) %>% 
-      
-      bind_cols(
-        campionamento() %>% 
-          left_join(nesami, by = "Nconf") %>%
-          group_by(ASL) %>% 
-          # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
-          summarise('Esami eseguiti' = sum(n, na.rm = TRUE)) %>%
-          ungroup() %>% 
-          dplyr::select('Esami eseguiti')) %>%
+  campionamento() %>% 
+    distinct(Nconf, .keep_all = TRUE) %>% 
+    group_by(ASL) %>% 
+    summarise('Controlli effettuati' = n()) %>%
+    ungroup() %>% 
     
-    adorn_totals(name = "TOTALE AUSL", col = 2:4)
-  
+    bind_cols(
+      # campionamento() %>% 
+      #   distinct(Nconf, .keep_all = TRUE) %>%  
+      #   group_by(ASL) %>% 
+      #   summarise('Campioni conferiti' = sum(NrCampioni)) %>%
+      #   ungroup() %>% 
+      #   dplyr::select('Campioni conferiti')) %>% 
+      
+      campionamento() %>% 
+        # mutate(Nconf_camp = paste(Nconf, numero_del_campione, sep="-")) %>%
+        # distinct(Nconf_camp, .keep_all = TRUE) %>%
+        distinct(Nconf, numero_del_campione, .keep_all = TRUE) %>%
+        group_by(ASL) %>% 
+        summarise('Campioni conferiti' = n()) %>%
+        ungroup() %>% 
+        dplyr::select('Campioni conferiti')) %>% 
+    
+    bind_cols(
+      campionamento() %>% 
+        group_by(ASL) %>% 
+        summarise('Esami eseguiti' = n()) %>%
+        ungroup() %>% 
+        dplyr::select('Esami eseguiti')) %>%
+    
+    adorn_totals(name = "TOTALE AUSL", col = 2:4)  
 })
+
+# campionamento <- reactive({
+#   if(input$finalita == "Tutte le finalità") {
+#     confSA %>% 
+#       filter(anno == input$selanno)
+#   } else {
+#     confSA %>% 
+#       filter(anno == input$selanno, finalita == input$finalita)
+#   }
+# })
+# 
+# 
+# #tabella summary
+# 
+# summaryCamp <- reactive({  
+#     campionamento() %>% 
+#       group_by(ASL) %>% 
+#       # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>% 
+#       distinct(Nconf, .keep_all = TRUE) %>% 
+#       summarise('Controlli effettuati' = n()) %>% 
+#       
+#       bind_cols(
+#         campionamento() %>% 
+#           group_by(ASL) %>% 
+#           # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
+#           distinct(Nconf, .keep_all = TRUE) %>%  
+#           summarise('Campioni conferiti' = sum(NrCampioni)) %>%
+#           ungroup() %>% 
+#           dplyr::select('Campioni conferiti')) %>% 
+#       
+#       bind_cols(
+#         campionamento() %>% 
+#           left_join(nesami, by = "Nconf") %>%
+#           group_by(ASL) %>% 
+#           # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
+#           summarise('Esami eseguiti' = sum(n, na.rm = TRUE)) %>%
+#           ungroup() %>% 
+#           dplyr::select('Esami eseguiti')) %>%
+#     
+#     adorn_totals(name = "TOTALE AUSL", col = 2:4)
+#   
+# })
 
 
 
 output$t1SA <- DT::renderDataTable({
   
-  if (req(input$finalita) == "Tutte le finalità") {
+  if (input$finalita == "Tutte le finalità") {
     
   summaryCamp() %>%
     #mutate(ASL = gsub(".*- ","", ASL)) %>%
@@ -127,28 +174,36 @@ ASLdrill <- reactive({
                      "Distretto"),#16
         rownames = FALSE,
         selection = 'none',
-        extensions = 'Buttons',
+        # extensions = 'Buttons',
         filter = c('top'),
-        callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
+        callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');",
+                      "var a = document.createElement('a');",
+                      "$(a).addClass('dt-button fa fa-arrow-circle-down fa-3x');",
+                      "a.href = document.getElementById('tsadrill_download').href;",
+                      "a.download = '';",
+                      "$(a).attr('target', '_blank');",
+                      "$(a).text('');",
+                      "$('div.dwnld_SA').append(a);",
+                      "$('#tsadrill_download').hide();"),   # &#61442 - &#xf002 - \u2315 # 🔍 
         #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
         #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
         options = list(
           order = list(list(1, 'desc'), list(5, "asc")),
-          dom = 'Brltip',
+          dom = '<"dwnld_SA">rltip',
           searching = TRUE,
           autowidth = FALSE,
-          pageLength = 10,
-          lengthMenu = list(c(10, 25, 50, 100, -1), 
-                            c('10', '25', '50', '100', 'Tutti')),
-          buttons = list(
-            list(extend = "excel", text = "Scarica Tutto",
-                 filename = paste(input$finalita, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
-                 title = NULL,
-                 titleAttr = "Excel",
-                 exportOptions = list(
-                   modifier = list(page = "all"),
-                   columns = c(2,3,4,6,7,8,11,12,13,14,15,16)))
-            ),    
+          pageLength = 5,
+          lengthMenu = list(c(5, 25, 50, -1), 
+                            c('5', '25', '50', 'Tutti')),
+          # buttons = list(
+          #   list(extend = "excel", text = "Scarica Tutto",
+          #        filename = paste(input$finalita, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+          #        title = NULL,
+          #        titleAttr = "Excel",
+          #        exportOptions = list(
+          #          modifier = list(page = "all"),
+          #          columns = c(2,3,4,6,7,8,11,12,13,14,15,16)))
+          #   ),    
           columnDefs = list(
             list(orderData = 1, targets = 2),
             list(orderData = 5, targets = 6),
@@ -200,28 +255,36 @@ ASLdrill <- reactive({
                      "Esito"),#15
         rownames = FALSE,
         selection = 'none',
-        extensions = 'Buttons',
+        # extensions = 'Buttons',
         filter = c('top'),
-        callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
+        callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');",
+                      "var a = document.createElement('a');",
+                      "$(a).addClass('dt-button fa fa-arrow-circle-down fa-3x');",
+                      "a.href = document.getElementById('tsadrill_download').href;",
+                      "a.download = '';",
+                      "$(a).attr('target', '_blank');",
+                      "$(a).text('');",
+                      "$('div.dwnld_SA').append(a);",
+                      "$('#tsadrill_download').hide();"),   # &#61442 - &#xf002 - \u2315 # 🔍 
         #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
         #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
         options = list(
           order = list(list(1, 'desc'), list(5, "asc")),
-          dom = 'Brltip',
+          dom = '<"dwnld_SA">rltip',
           searching = TRUE,
           autowidth = FALSE,
-          pageLength = 10,
-          lengthMenu = list(c(10, 25, 50, 100, -1), 
-                            c('10', '25', '50', '100', 'Tutti')),
-          buttons = list(
-            list(extend = "excel", text = "Scarica Tutto",
-                 filename = paste(input$finalita, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
-                 title = NULL,
-                 titleAttr = "Excel",
-                 exportOptions = list(
-                   modifier = list(page = "all"),
-                   columns = c(2,3,4,6,7,8,11,12,13,14,15)))
-          ),    
+          pageLength = 5,
+          lengthMenu = list(c(5, 25, 50, -1), 
+                            c('5', '25', '50', 'Tutti')),
+          # buttons = list(
+          #   list(extend = "excel", text = "Scarica Tutto",
+          #        filename = paste(input$finalita, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+          #        title = NULL,
+          #        titleAttr = "Excel",
+          #        exportOptions = list(
+          #          modifier = list(page = "all"),
+          #          columns = c(2,3,4,6,7,8,11,12,13,14,15)))
+          # ),    
           columnDefs = list(
             list(orderData = 1, targets = 2),
             list(orderData = 5, targets = 6),
@@ -252,15 +315,87 @@ output$asldrill <- DT::renderDataTable(server = TRUE,{
   ASLdrill()
 })
 
+#DOWNLOAD----
+ASLdrill_dwnld <- reactive({
+  shiny::validate(
+    need(length(input$t1SA_rows_selected) > 0, "")
+  )
+  
+  
+  select_asl <- summaryCamp()[as.integer(input$t1SA_rows_selected), ]$ASL
+  
+  if(select_asl == "TOTALE AUSL"){  
+    proveSA %>%
+      mutate(dtinizio = as.Date(dtinizio),
+             dtfine = as.Date(dtfine)) %>%  
+      filter(finalita == input$finalita, annoiniz == input$selanno) %>% 
+      dplyr::select('Distretto' = ASL,
+                    'Conferimento' = Nconf2,
+                    'Finalità' = finalita,
+                    'Verbale' = verbale,
+                    'Codice Azienda' = codaz,
+                    'Numero campione' = numero_del_campione,
+                    'Data inizio' = dtinizio,
+                    'Data fine' = dtfine,
+                    'Specie' = specie,
+                    'Materiale' = materiale,
+                    'Prova' = prova,
+                    'Tecnica' = tecnica,
+                    'Esito' = valore)
 
+    } else {
+      proveSA %>%
+        mutate(dtinizio = as.Date(dtinizio),
+               dtfine = as.Date(dtfine)) %>%  
+        filter(ASL == select_asl, finalita == input$finalita, annoiniz == input$selanno) %>% 
+        dplyr::select('Distretto' = ASL,
+                      'Conferimento' = Nconf2,
+                      'Finalità' = finalita,
+                      'Verbale' = verbale,
+                      'Codice Azienda' = codaz,
+                      'Numero campione' = numero_del_campione,
+                      'Data inizio' = dtinizio,
+                      'Data fine' = dtfine,
+                      'Specie' = specie,
+                      'Materiale' = materiale,
+                      'Prova' = prova,
+                      'Tecnica' = tecnica,
+                      'Esito' = valore)
+  }
+  
+})
+
+
+output$tsadrill_download <- downloadHandler(
+  #https://stackoverflow.com/questions/50948024/shiny-downloadhandler-openxlsx-does-not-generate-a-xlsx-file
+  filename = function() {
+    paste('Sanità Animale - ',input$finalita, ' - attività ufficiale al ',
+          format(as.Date(substr(max(proveSA$dtreg[proveSA$annoiniz == input$selanno], na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"),
+          '.xlsx',
+          sep='')
+  },
+  content = function(file) {
+    
+    wb <- openxlsx::createWorkbook()
+    
+    openxlsx::addWorksheet(wb, "Sheet1")
+    
+    x <- ASLdrill_dwnld()
+    options(openxlsx.dateFormat = "dd/mm/yyyy")
+    openxlsx::writeData(wb, "Sheet1", x, rowNames = FALSE)
+    
+    openxlsx::saveWorkbook(wb, file, overwrite = TRUE)
+  }
+)
 
 
 #RICERCA CODICE ALLEVAMENTO ----
 ## tabella principale di sintesi----
 
 summarycodaz <- reactive({
-  confSA %>%
-    filter(codaz == input$codiceall) %>%
+  proveSA %>% 
+    distinct(Nconf, .keep_all = TRUE) %>% 
+    filter(codaz == input$codiceall, annoiniz == input$selanno) %>%
     dplyr::select(Nconf, Nconf2, Nconf3, verbale, finalita,
                   dtprel, dtprel_chr, dtconf, dtconf_chr, dtreg, dtreg_chr,
                   specie, materiale, conferente, proprietario, veterinario, comune,
@@ -270,7 +405,7 @@ summarycodaz <- reactive({
 
 
 
-output$t3SA <- DT::renderDataTable(
+output$t3SA <- DT::renderDataTable(server = FALSE,{
   summarycodaz() %>% 
     datatable(style = 'bootstrap',
               colnames = c("Conferimento_anno",#0
@@ -296,7 +431,8 @@ output$t3SA <- DT::renderDataTable(
               selection = 'single',
               extensions = 'Buttons',
               filter = c('top'),
-              callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
+              callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');",
+                            "$('tbody').css('cursor', 'pointer')"),   # &#61442 - &#xf002 - \u2315 # 🔍 
               options = list(
                 order = list(list(1, 'desc')),
                 dom = 'Brltip',
@@ -304,11 +440,11 @@ output$t3SA <- DT::renderDataTable(
                 searching = TRUE,
                 autoWidth = TRUE,
                 pageLength = 5,
-                lengthMenu = list(c(5, 25, 50, 100, -1), 
-                                  c('5', '25', '50', '100', 'Tutti')),
+                lengthMenu = list(c(5, 25, 50, -1), 
+                                  c('5', '25', '50', 'Tutti')),
                 buttons = list(
                   list(extend = "excel", text = "Scarica Tutto",
-                       filename = paste("Codice azienda",input$codiceall, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+                       filename = paste("Codice azienda", input$codiceall, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
                        title = NULL,
                        titleAttr = "Excel",
                        exportOptions = list(
@@ -342,7 +478,7 @@ output$t3SA <- DT::renderDataTable(
                                 zeroRecords = "---")        
               )
     )
-)
+})
 
 
 ## tabella di drilldown----
@@ -395,12 +531,12 @@ azcodedrill <- reactive({
         dom = 'Brltip',
         searching = TRUE,
         autowidth = FALSE,
-        pageLength = 10,
-        lengthMenu = list(c(10, 25, 50, 100, -1), 
-                          c('10', '25', '50', '100', 'Tutti')),
+        pageLength = 5,
+        lengthMenu = list(c(5, 25, 50, -1), 
+                          c('5', '25', '50', 'Tutti')),
         buttons = list(
           list(extend = "excel", text = "Scarica Tutto",
-               filename = paste("conferimento", select_conf, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")), #format(Sys.Date(),"%d-%m-%Y")               title = NULL,
+               filename = paste("conferimento", stringi::stri_sub(select_conf, from = 5), "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")), #format(Sys.Date(),"%d-%m-%Y")               title = NULL,
                titleAttr = "Excel",
                exportOptions = list(
                  modifier = list(page = "all"),
@@ -514,7 +650,7 @@ azcodedrill <- reactive({
   #   )
 })
 
-output$cadrill <- DT::renderDataTable(server = TRUE,{
+output$cadrill <- DT::renderDataTable(server = FALSE,{
   azcodedrill()
 })
 

@@ -1,10 +1,10 @@
 azot <- reactive({
   if(input$finalita3 == "Tutte le finalità") {
-    confAZ %>% 
-      filter(anno == input$selanno)
+    proveAZ %>% 
+      filter(annoiniz == input$selanno)
   } else {
-    confAZ %>% 
-      filter(anno == input$selanno, finalita == input$finalita3)
+    proveAZ %>% 
+      filter(annoiniz == input$selanno, finalita == input$finalita3)
   }
 })
 
@@ -13,25 +13,26 @@ azot <- reactive({
 
 summaryazot <- reactive({  
   azot() %>% 
-    group_by(ASL) %>% 
-    # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>% 
     distinct(Nconf, .keep_all = TRUE) %>% 
+    group_by(ASL) %>% 
     summarise('Controlli effettuati' = n()) %>%
+    ungroup() %>% 
     
     bind_cols(
-     azot() %>% 
+      azot() %>% 
+        # mutate(Nconf_camp = paste(Nconf, numero_del_campione, sep="-")) %>%
+        # distinct(Nconf_camp, .keep_all = TRUE) %>%  
+        distinct(Nconf, numero_del_campione, .keep_all = TRUE) %>%
         group_by(ASL) %>% 
-        # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
-        distinct(Nconf, .keep_all = TRUE) %>%  
-        summarise('Campioni conferiti'  = sum(NrCampioni)) %>% ungroup() %>% 
+        summarise('Campioni conferiti' = n()) %>%
+        ungroup() %>% 
         dplyr::select('Campioni conferiti')) %>% 
     
     bind_cols(
       azot() %>% 
-        left_join(nesami, by = "Nconf") %>% ungroup() %>% 
         group_by(ASL) %>% 
-        # mutate(motivo_prel = ifelse(is.na(motivo_prel), finalita, motivo_prel)) %>%
-        summarise('Esami eseguiti' = sum(n, na.rm = TRUE))%>% ungroup() %>% 
+        summarise('Esami eseguiti' = n()) %>%
+        ungroup() %>% 
         dplyr::select('Esami eseguiti')) %>%
     
     adorn_totals(name = "TOTALE AUSL", col = 2:4)
@@ -42,7 +43,7 @@ summaryazot <- reactive({
 
 output$t1AZ <- DT::renderDataTable({
   
-  if (req(input$finalita3) == "Tutte le finalità") {
+  if (input$finalita3 == "Tutte le finalità") {
     
     summaryazot() %>%
       #mutate(ASL = gsub(".*- ","", ASL)) %>%
@@ -122,28 +123,36 @@ if(select_aslaz == "TOTALE AUSL"){
                    "Distretto"),#16
       rownames = FALSE,
       selection = 'none',
-      extensions = 'Buttons',
+      # extensions = 'Buttons',
       filter = c('top'),
-      callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
+      callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');",
+                    "var a = document.createElement('a');",
+                    "$(a).addClass('dt-button fa fa-arrow-circle-down fa-3x');",
+                    "a.href = document.getElementById('aslAZdrill_download').href;",
+                    "a.download = '';",
+                    "$(a).attr('target', '_blank');",
+                    "$(a).text('');",
+                    "$('div.dwnld_AZ').append(a);",
+                    "$('#aslAZdrill_download').hide();"),   # &#61442 - &#xf002 - \u2315 # 🔍 
       #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
       #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
       options = list(
         order = list(list(1, 'desc'), list(5, "asc")),
-        dom = 'Brltip',
+        dom = '<"dwnld_AZ">rltip',
         searching = TRUE,
         autowidth = FALSE,
-        pageLength = 10,
-        lengthMenu = list(c(10, 25, 50, 100, -1), 
-                          c('10', '25', '50', '100', 'Tutti')),
-        buttons = list(
-          list(extend = "excel", text = "Scarica Tutto",
-               filename = paste(input$finalita3, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
-               title = NULL,
-               titleAttr = "Excel",
-               exportOptions = list(
-                 modifier = list(page = "all"),
-                 columns = c(2,3,4,6,7,8,11,12,13,14,15,16)))
-        ),    
+        ength = 5,
+        lengthMenu = list(c(5, 25, 50, -1), 
+                          c('5', '25', '50', 'Tutti')),
+        # buttons = list(
+        #   list(extend = "excel", text = "Scarica Tutto",
+        #        filename = paste(input$finalita3, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+        #        title = NULL,
+        #        titleAttr = "Excel",
+        #        exportOptions = list(
+        #          modifier = list(page = "all"),
+        #          columns = c(2,3,4,6,7,8,11,12,13,14,15,16)))
+        # ),    
         columnDefs = list(
           list(orderData = 1, targets = 2),
           list(orderData = 5, targets = 6),
@@ -196,28 +205,36 @@ if(select_aslaz == "TOTALE AUSL"){
                    "Esito"),#15
       rownames = FALSE,
       selection = 'none',
-      extensions = 'Buttons',
+      # extensions = 'Buttons',
       filter = c('top'),
-      callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');"),   # &#61442 - &#xf002 - \u2315 # 🔍 
+      callback = JS("$(\"input[type='search']\").attr('placeholder','🔍');",
+                    "var a = document.createElement('a');",
+                    "$(a).addClass('dt-button fa fa-arrow-circle-down fa-3x');",
+                    "a.href = document.getElementById('aslAZdrill_download').href;",
+                    "a.download = '';",
+                    "$(a).attr('target', '_blank');",
+                    "$(a).text('');",
+                    "$('div.dwnld_AZ').append(a);",
+                    "$('#aslAZdrill_download').hide();"),   # &#61442 - &#xf002 - \u2315 # 🔍 
       #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
       #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
       options = list(
         order = list(list(1, 'desc'), list(5, "asc")),
-        dom = 'Brltip',
+        dom = '<"dwnld_AZ">rltip',
         searching = TRUE,
         autowidth = FALSE,
-        pageLength = 10,
-        lengthMenu = list(c(10, 25, 50, 100, -1), 
-                          c('10', '25', '50', '100', 'Tutti')),
-        buttons = list(
-          list(extend = "excel", text = "Scarica Tutto",
-               filename = paste(input$finalita3, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
-               title = NULL,
-               titleAttr = "Excel",
-               exportOptions = list(
-                 modifier = list(page = "all"),
-                 columns = c(2,3,4,6,7,8,11,12,13,14,15)))
-        ),    
+        pageLength = 5,
+        lengthMenu = list(c(5, 25, 50, -1), 
+                          c('5', '25', '50', 'Tutti')),
+        # buttons = list(
+        #   list(extend = "excel", text = "Scarica Tutto",
+        #        filename = paste(input$finalita3, "- attività ufficiale al", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
+        #        title = NULL,
+        #        titleAttr = "Excel",
+        #        exportOptions = list(
+        #          modifier = list(page = "all"),
+        #          columns = c(2,3,4,6,7,8,11,12,13,14,15)))
+        # ),    
         columnDefs = list(
           list(orderData = 1, targets = 2),
           list(orderData = 5, targets = 6),
@@ -248,3 +265,75 @@ output$asldrillalimZot <- DT::renderDataTable(server = TRUE,{
   ASLdrillaz()
 })
 
+
+#DOWNLOAD----
+aslAZdrill_dwnld <- reactive({
+  shiny::validate(
+    need(length(input$t1AZ_rows_selected) > 0, "") #, "Seleziona la FINALITÀ e il DISTRETTO per vedere il dettaglio delle attività"
+  )
+  
+  select_aslaz <- summaryalim()[as.integer(input$t1AZ_rows_selected), ]$ASL
+  
+  if(select_aslaz == "TOTALE AUSL"){  
+    proveAZ %>% 
+      mutate(dtinizio = as.Date(dtinizio),
+             dtfine = as.Date(dtfine)) %>%  
+      filter(finalita == input$finalita3, annoiniz == input$selanno) %>% 
+      dplyr::select('Distretto' = ASL,
+                    'Conferimento' = Nconf2,
+                    'Finalità' = finalita,
+                    'Verbale' = verbale,
+                    'Codice Azienda' = codaz,
+                    'Numero campione' = numero_del_campione,
+                    'Data inizio' = dtinizio,
+                    'Data fine' = dtfine,
+                    'Specie' = specie,
+                    'Materiale' = materiale,
+                    'Prova' = prova,
+                    'Tecnica' = tecnica,
+                    'Esito' = valore)
+    
+  } else {
+    proveAZ %>%
+      mutate(dtinizio = as.Date(dtinizio),
+             dtfine = as.Date(dtfine)) %>%  
+      filter(ASL == select_aslaz, finalita == input$finalita3, annoiniz == input$selanno) %>% 
+      dplyr::select('Distretto' = ASL,
+                    'Conferimento' = Nconf2,
+                    'Finalità' = finalita,
+                    'Verbale' = verbale,
+                    'Codice Azienda' = codaz,
+                    'Numero campione' = numero_del_campione,
+                    'Data inizio' = dtinizio,
+                    'Data fine' = dtfine,
+                    'Specie' = specie,
+                    'Materiale' = materiale,
+                    'Prova' = prova,
+                    'Tecnica' = tecnica,
+                    'Esito' = valore)
+  }
+  
+})
+
+
+output$aslAZdrill_download <- downloadHandler(
+  #https://stackoverflow.com/questions/50948024/shiny-downloadhandler-openxlsx-does-not-generate-a-xlsx-file
+  filename = function() {
+    paste('Alimenti Zootecnici - ',input$finalita3, ' - attività ufficiale al ',
+          format(as.Date(substr(max(proveAZ$dtreg[proveAZ$annoiniz == input$selanno], na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"),
+          '.xlsx',
+          sep='')
+  },
+  content = function(file) {
+    
+    wb <- openxlsx::createWorkbook()
+    
+    openxlsx::addWorksheet(wb, "Sheet1")
+    
+    x <- aslAZdrill_dwnld()
+    options(openxlsx.dateFormat = "dd/mm/yyyy")
+    openxlsx::writeData(wb, "Sheet1", x, rowNames = FALSE)
+    
+    openxlsx::saveWorkbook(wb, file, overwrite = TRUE)
+  }
+)

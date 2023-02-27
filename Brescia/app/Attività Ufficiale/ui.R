@@ -84,6 +84,16 @@ ui <- tagList(navbarPageWithInputs(
     margin-left: 8px;
     }
     
+    /*BOTTONE DOWNLOAD JDS PERSONALIZZATO DATATABLE*/
+    .dt-button {
+    float: left;
+    }
+    
+    a.dt-button {
+    text-decoration: none !important;
+    }
+    /*------------------------------------------*/
+    
     /*dt datatable style = bootstrap*/
     div.dataTables_wrapper div.dataTables_paginate li.paginate_button {
     padding: 1px 1px 1px 1px;
@@ -568,6 +578,7 @@ ui <- tagList(navbarPageWithInputs(
                    condition = "output.conditionSA",
                  fluidPage(style = "padding-left:0px; padding-right:0px;",
                            fluidRow(
+                             downloadButton("tsadrill_download", "", style = "visibility: hidden;"),
                              uiOutput("tsadrill")
                            )
                  )
@@ -701,7 +712,16 @@ ui <- tagList(navbarPageWithInputs(
                    inputId = "finalita2", 
                    label = "Seleziona il tipo di campionamento", 
                    choices = c("Tutte le finalità", levels(factor(confSicA$finalita)))
-                 )
+                 ),
+                 # fluidRow(style = "margin-left: 0px;",
+                 #          column(12, style = "width: auto;padding-left: 0px;padding-right: 0px; display: flex; align-items:center",
+                 #                 tags$h4("Download", style = "font-weight: 700;font-size: 14px;padding-right:15px;"),
+                 #                 downloadBttn(
+                 #                   label = NULL,
+                 #                   outputId = "tsalimdrill_download",
+                 #                   style = "material-circle",
+                 #                   color = "primary"
+                 #                 )))
                )
         ),
         column(8, style = "padding-right:0px;",
@@ -717,6 +737,7 @@ ui <- tagList(navbarPageWithInputs(
         condition = "output.conditionSicA",
       fluidPage(style = "padding-left:0px;padding-right:0px;",
                 fluidRow(
+                  downloadButton("tsalimdrill_download", "", style = "visibility: hidden;"),
                   uiOutput("tsalimdrill")
                 ))
       )
@@ -764,6 +785,7 @@ ui <- tagList(navbarPageWithInputs(
         condition = "output.conditionAZ",
         fluidPage(style = "padding-left:0px;padding-right:0px;",
                 fluidRow(
+                  downloadButton("aslAZdrill_download", "", style = "visibility: hidden;"),
                   uiOutput("aslAZdrill")
                 )
         )
