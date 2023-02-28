@@ -191,7 +191,8 @@ tags$head(
       }   
       
       #table_diagno th.sorting,
-      #drill_diagno th.sorting {
+      #drill_diagno th.sorting,
+      #diagno_esami th.sorting {
       vertical-align: middle;
       }
       
@@ -245,7 +246,8 @@ tags$head(
       }   
       
       #table_siero th.sorting,
-      #drill_siero th.sorting {
+      #drill_siero th.sorting,
+      #siero_esami th.sorting {
       vertical-align: middle;
       }
       
@@ -299,7 +301,8 @@ tags$head(
       }   
       
       #table_farma th.sorting,
-      #drill_farma th.sorting {
+      #drill_farma th.sorting,
+      #farma_esami th.sorting {
       vertical-align: middle;
       }
       
@@ -353,7 +356,8 @@ tags$head(
       }   
       
       #table_ittio th.sorting,
-      #drill_ittio th.sorting {
+      #drill_ittio th.sorting,
+      #ittio_esami th.sorting {
       vertical-align: middle;
       }
       
@@ -506,7 +510,8 @@ tabPanel(
    value = "accettazione",
    br(),
    fluidPage( 
-      # useShinyjs(),
+     tags$body(HTML("<div id='divLoading'> </div>")),
+     # useShinyjs(),
      # conditionalPanel(
      #             "false", # always hide the download button, because we will trigger it 
      #             downloadButton("downloadData") # programmatically with shinyjs
@@ -599,6 +604,7 @@ tabPanel(
   value = "labdiagnostica",
   br(),
   fluidPage(
+    tags$body(HTML("<div id='divLoading'> </div>")),
     useShinyjs(),
     style = "padding-right: 0px; padding-left: 0px;",
     grillade(gutter = "xl",
@@ -769,6 +775,7 @@ tabPanel(
   br(),
   fluidPage(
     useShinyjs(),
+    tags$body(HTML("<div id='divLoading'> </div>")),
     style = "padding-right: 0px; padding-left: 0px;",
     grillade(gutter = "xl",
              wellPanel(style = "margin-bottom: 0px; height:100%; line-height: 1.8;",#style = "margin-bottom: 50px;",
@@ -949,6 +956,7 @@ tabPanel(
   value = "labfarmacovigilanza",
   br(),
   fluidPage(
+    tags$body(HTML("<div id='divLoading'> </div>")),
     useShinyjs(),
     style = "padding-right: 0px; padding-left: 0px;",
     grillade(gutter = "xl",
@@ -1113,6 +1121,7 @@ tabPanel(
   value = "labittiopatologia",
   br(),
   fluidPage(
+    tags$body(HTML("<div id='divLoading'> </div>")),
     useShinyjs(),
     style = "padding-right: 0px; padding-left: 0px;",
     grillade(gutter = "xl",
@@ -1281,14 +1290,17 @@ tabPanel(
   title = "Tabelle Pivot",
   value = "pivot",
   br(),
-  fluidPage(style = "padding-right: 0px; padding-left: 0px;",
+  fluidPage(
+    tags$body(HTML("<div id='divLoading'> </div>")),
+    style = "padding-right: 0px; padding-left: 0px;",
     fluidRow(
       
       column(12, align = "center",
              #wellPanel(
-             shinycssloaders::withSpinner(
+             # shinycssloaders::withSpinner(
                proxy.height = "500px",
-               rpivotTableOutput("pivot", height = "100%"), type = 8)
+               rpivotTableOutput("pivot", height = "100%")
+               # , type = 8)
       #)
     ))
   )

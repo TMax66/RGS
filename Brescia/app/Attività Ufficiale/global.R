@@ -49,8 +49,8 @@ library(grillade)
 conf <- readRDS(here("Brescia", "data", "processed", "conf.RDS"))
 prove <- readRDS(here("Brescia", "data", "processed", "prove.RDS"))
 
-bovidi <- read.csv2(here("Brescia", "data", "bovidi.csv"))
-coordbv <- bovidi %>% 
+coordbv <- read.csv2(here("Brescia", "data", "coordbv.csv"))
+coordbv <- coordbv %>% 
   filter(georef == 1) %>% 
   st_as_sf(coords = c("est", "nord")) %>% 
   st_set_crs(3003) %>% 

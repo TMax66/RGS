@@ -34,7 +34,7 @@ summaryalim <- reactive({
         ungroup() %>% 
         dplyr::select('Esami eseguiti')) %>%
     
-    adorn_totals(name = "TOTALE AUSL", col = 2:4)
+    adorn_totals(name = "TOTALE ATS", col = 2:4)
   
   })
 
@@ -93,7 +93,7 @@ select_aslalim <- summaryalim()[as.integer(input$t1SicA_rows_selected), ]$ASL
   
 #tabella totale----
 
-if(select_aslalim == "TOTALE AUSL"){  
+if(select_aslalim == "TOTALE ATS"){  
   proveSicA %>% 
     filter(finalita == input$finalita2, annoiniz == input$selanno) %>% 
     dplyr::select(Nconf, Nconf2, Nconf3, verbale, codaz, numero_del_campione, numero_del_campione_chr,
@@ -136,7 +136,9 @@ if(select_aslalim == "TOTALE AUSL"){
       #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
       #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
       options = list(
-        order = list(list(1, 'desc'), list(5, "asc")),
+        order = list(list(9, 'desc'),
+                     list(1, 'asc'),
+                     list(5, 'asc')),
         dom = '<"dwnld_SicA">rltip',
         searching = TRUE,
         autowidth = FALSE,
@@ -217,7 +219,9 @@ if(select_aslalim == "TOTALE AUSL"){
       #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
       #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
       options = list(
-        order = list(list(1, 'desc'), list(5, "asc")),
+        order = list(list(9, 'desc'),
+                     list(1, 'asc'),
+                     list(5, 'asc')),
         dom = '<"dwnld_SicA">rltip',
         searching = TRUE,
         autowidth = FALSE,
@@ -272,7 +276,7 @@ ASLdrillalim_dwnld <- reactive({
   
   select_aslalim <- summaryalim()[as.integer(input$t1SicA_rows_selected), ]$ASL
 
-  if(select_aslalim == "TOTALE AUSL"){  
+  if(select_aslalim == "TOTALE ATS"){  
     proveSicA %>% 
       mutate(dtinizio = as.Date(dtinizio),
              dtfine = as.Date(dtfine)) %>%  

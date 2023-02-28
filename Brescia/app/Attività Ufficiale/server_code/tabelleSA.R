@@ -42,7 +42,7 @@ summaryCamp <- reactive({
         ungroup() %>% 
         dplyr::select('Esami eseguiti')) %>%
     
-    adorn_totals(name = "TOTALE AUSL", col = 2:4)  
+    adorn_totals(name = "", col = 2:4)  
 })
 
 # campionamento <- reactive({
@@ -83,7 +83,7 @@ summaryCamp <- reactive({
 #           ungroup() %>% 
 #           dplyr::select('Esami eseguiti')) %>%
 #     
-#     adorn_totals(name = "TOTALE AUSL", col = 2:4)
+#     adorn_totals(name = "", col = 2:4)
 #   
 # })
 
@@ -144,7 +144,7 @@ ASLdrill <- reactive({
   
   #tabella totale----
   
-  if(select_asl == "TOTALE AUSL"){  
+  if(select_asl == ""){  
     proveSA %>% 
       filter(finalita == input$finalita, annoiniz == input$selanno) %>% 
       dplyr::select(Nconf, Nconf2, Nconf3, verbale, codaz, numero_del_campione, numero_del_campione_chr,
@@ -188,7 +188,9 @@ ASLdrill <- reactive({
         #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
         #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
         options = list(
-          order = list(list(1, 'desc'), list(5, "asc")),
+          order = list(list(9, 'desc'),
+                       list(1, 'asc'),
+                       list(5, 'asc')),
           dom = '<"dwnld_SA">rltip',
           searching = TRUE,
           autowidth = FALSE,
@@ -269,7 +271,9 @@ ASLdrill <- reactive({
         #cerca --> character --> copy to clipboard --> da https://graphemica.com/%F0%9F%94%8D#character%20left-pointing%20magnifying%20glass
         #https://stackoverflow.com/questions/32915485/how-to-prevent-unicode-characters-from-rendering-as-emoji-in-html-from-javascript
         options = list(
-          order = list(list(1, 'desc'), list(5, "asc")),
+          order = list(list(9, 'desc'),
+                       list(1, 'asc'),
+                       list(5, 'asc')),
           dom = '<"dwnld_SA">rltip',
           searching = TRUE,
           autowidth = FALSE,
@@ -324,7 +328,7 @@ ASLdrill_dwnld <- reactive({
   
   select_asl <- summaryCamp()[as.integer(input$t1SA_rows_selected), ]$ASL
   
-  if(select_asl == "TOTALE AUSL"){  
+  if(select_asl == ""){  
     proveSA %>%
       mutate(dtinizio = as.Date(dtinizio),
              dtfine = as.Date(dtfine)) %>%  

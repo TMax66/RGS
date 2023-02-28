@@ -59,72 +59,18 @@ conferimenti %>%
          annoprel = year(dtprel),
          annoreg = year(dtreg),
          codaz = casefold(codaz, upper = TRUE),
-         Nconf = paste0(anno, nconf)) %>%
+         Nconf = paste0(annoreg, nconf)) %>%
   distinct(Nconf, .keep_all = TRUE) %>% 
   dplyr::select(-finalita) %>% 
   left_join(
     conferimenti %>%
       distinct() %>% 
       mutate(anno = year(dtconf),
-             Nconf = paste0(anno,nconf)) %>% 
+             annoreg = year(dtreg),
+             Nconf = paste0(annoreg, nconf)) %>% 
       dplyr::select(Nconf, finalita) %>% 
       distinct() %>% 
       pivot_wider(names_from = "finalita", values_from = "finalita") %>%  
-      unite("finalita", 2:85, na.rm = TRUE, remove = FALSE) %>% 
-      dplyr::select(1,2), by="Nconf") %>%
+      unite("finalita", 2:73, na.rm = TRUE, remove = FALSE) %>% 
+      dplyr::select(1,2), by = "Nconf") %>% 
   saveRDS(file = here("Modena", "data", "processed", "conf.RDS"))
-  
-#prove <- readRDS(here("data", "processed", "prove.RDS"))
-#conf <- readRDS(here("data", "processed", "conf.RDS"))
-
-#conf_prove <- conf %>% distinct() %>% 
-  #left_join(prove, by = "Nconf")
-
-# conf %>% 
-#   left_join(
-#   coordbv %>% 
-#     select(codaz, lat, lon), by="codaz"
-#   
-# ) %>% 
-#   saveRDS(file = here("Modena", "data", "processed", "conf.RDS"))
-  
-    
-  
-
-
-
-
-
-
-#mappa provincia di modena###
-
-#coord <- bvcoord <- read_excel("dati/bvcoord.xlsx", 
-                              # col_types = c("text", "numeric", "numeric"))
-
-# 
-# ita <- getData("GADM", country = "ITA", level = 0)
-# reg <- getData("GADM", country = "ITA", level = 1)
-# prov <- getData("GADM", country = "ITA", level = 2)
-# com <- getData("GADM", country = "ITA", level = 3)
-
-
-
-# MO <- prov[prov$NAME_2 == "Modena", ]
-# ER <- reg[reg$NAME_1 == "Emilia-Romagna",]
-# commo <- com[com$NAME_2 == "Modena",]
-# 
-# leaflet() %>% 
-#   addTiles() %>% 
-#   addPolygons(data = MO, stroke = TRUE, fill =  FALSE) %>% 
-#   addPolygons(data = commo, stroke = TRUE) %>% 
-#   addCircleMarkers(lng=coord$lng, lat = coord$lat, radius = 0.5 , label = coord$codaz)
-
-
-# ##accesso al dbase access
-# 
-# con <- odbcConnect("modena")
-# 
-# 
-# con <- dbConnect(drv = odbc(), .connection_string = paste0("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-#                                                        DBQ=C:/Users/vito.tranquillo/Desktop/Git Projects /Reporting-Sanitario/dati/Database AUSL attività 2022.accdb;"))
-# 

@@ -388,7 +388,8 @@ output$t3 <- renderDataTable(
     bind_cols(
       confHAZ() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)/86400)) %>% 
+        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)#/86400
+                                               )) %>% 
         group_by(ASL) %>% 
         summarise('Tempo medio attesa esito' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) %>% 
         ungroup() %>%

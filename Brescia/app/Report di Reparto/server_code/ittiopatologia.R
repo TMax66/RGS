@@ -60,7 +60,7 @@ output$ittioP1 <- renderPlotly({
     config(displayModeBar = FALSE)
   })
 
-outputOptions(output, "ittioP1", suspendWhenHidden = FALSE)
+# outputOptions(output, "ittioP1", suspendWhenHidden = FALSE)
 
 ##TEMPI MEDI PER PROVA----
 
@@ -167,7 +167,7 @@ output$ittioT1 <- renderDataTable({
       )
   })
 
-outputOptions(output, "ittioT1", suspendWhenHidden = FALSE)
+# outputOptions(output, "ittioT1", suspendWhenHidden = FALSE)
 
 ##VEDI CONFERIMENTI----
 # output$table_ittio <- renderUI({
@@ -210,7 +210,7 @@ output$table_ittio <- renderDataTable(server = TRUE, {
         class = 'compact row-border',
         dom = 'tip',
         pageLength = 5,
-        # order = list(list(7, 'desc')),
+        order = list(list(7, 'desc')),
         # buttons = list(
         #   list(extend = "excel", text = "Scarica Tutto",
         #        filename = paste("Laboratorio di ittiopatologia", "- dati al", format(as.Date(substr(max(ittiopatologia$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y")),
@@ -407,7 +407,9 @@ output$ittio_esami <- DT::renderDataTable(server = TRUE,{
           class = 'compact row-border',
           dom = 'tip',
           pageLength = 5,
-          order = list(list(3, 'asc')),
+          order = list(list(4, 'desc'),
+                       list(0, 'asc'),
+                       list(3, 'asc')),
           columnDefs = list(
             #   list(orderData = 4, targets = 6),
             #   list(orderData = 5, targets = 7),

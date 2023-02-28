@@ -122,6 +122,36 @@ ittiopatologia <- conf %>%
          tipo_prelievo = as.factor(tipo_prelievo))
 
 
+# HOME - CONF e PROVE per Settore----
+confSA <- conf %>% filter(settore == "Sanità Animale") 
+
+confSicA <- conf %>% filter(settore == "Alimenti Uomo")
+
+confAZ <- conf %>% filter(settore == "Alimenti Zootecnici")
+
+proveSA <- 
+  confSA %>%
+  left_join(prove, by = "Nconf") %>% 
+  mutate(annoiniz = year(dtinizio),
+         numero_del_campione_chr = as.character(numero_del_campione),
+         dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
+         dtfine_chr = format(dtfine, "%d/%m/%Y"))
+
+proveSicA <- 
+  confSicA %>% 
+  left_join(prove, by = "Nconf") %>% 
+  mutate(annoiniz = year(dtinizio),
+         numero_del_campione_chr = as.character(numero_del_campione),
+         dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
+         dtfine_chr = format(dtfine, "%d/%m/%Y"))
+
+proveAZ <- 
+  confAZ %>% 
+  left_join(prove, by = "Nconf") %>% 
+  mutate(annoiniz = year(dtinizio),
+         numero_del_campione_chr = as.character(numero_del_campione),
+         dtinizio_chr = format(dtinizio, "%d/%m/%Y"),
+         dtfine_chr = format(dtfine, "%d/%m/%Y"))
 
 
 ### lab biologia molecolare 
