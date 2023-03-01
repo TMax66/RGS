@@ -68,12 +68,12 @@ FROM
   }
 WHERE
   
-  {fn year(dbo.Conferimenti.Data)}  >=  2021
+  {fn year(dbo.Conferimenti.Data_Accettazione)}  >=  2021
   AND  dbo_Anag_Reparti_ConfAcc.Descrizione  =  'Sede Territoriale di Modena'
 "
 
 
-proveIN <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
+proveIN <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data_Accettazione) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
                          Anag_Tecniche.Descrizione AS tecnica, Anag_Prove.Descrizione AS prova, Indice_Campioni_Esaminati.Numero_Campione AS numero_del_campione, Esami_Aggregati.Data_Inizio_Analisi AS dtinizio, 
                          Esami_Aggregati.Data_Fine_Analisi AS dtfine, Nomenclatore_Range.Valore AS valore, Nomenclatore_Range.ModEspr AS modexpr, Nomenclatore_Range.ModEspr2 AS modexpr2, Risultati_Analisi.Segno AS segno, 
                          Risultati_Analisi.Valore AS valore2, dbo_Anag_Tipo_Dett_Diagnostica.Descrizione AS dett1, dbo_Anag_Dettagli_Diagnostica.Dettaglio AS dett2, Risultati_Analisi_Dettagli.Testo_Dettaglio AS testodett, Risultati_Analisi.Esito, 
@@ -104,11 +104,11 @@ FROM            Anag_Esiti INNER JOIN
                          Anag_Dettagli AS dbo_Anag_Dettagli_Diagnostica ON Risultati_Analisi_Dettagli.Codice_Dettaglio = dbo_Anag_Dettagli_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Tipo_Dett AS dbo_Anag_Tipo_Dett_Diagnostica ON Risultati_Analisi_Dettagli.Tipo_Dettaglio = dbo_Anag_Tipo_Dett_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Laboratori ON Laboratori_Reparto.Laboratorio = Anag_Laboratori.Codice
-WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data) } >= 2021) AND (Anag_Reparti.Descrizione = 'Sede Territoriale di Modena')
+WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data_Accettazione) } >= 2021) AND (Anag_Reparti.Descrizione = 'Sede Territoriale di Modena')
 "
 
 
-proveOUT <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
+proveOUT <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data_Accettazione) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
                          Anag_Tecniche.Descrizione AS tecnica, Anag_Prove.Descrizione AS prova, Indice_Campioni_Esaminati.Numero_Campione AS numero_del_campione, Esami_Aggregati.Data_Invio, Esami_Aggregati.Data_Carico, 
                          Esami_Aggregati.Data_Inizio_Analisi AS dtinizio, Esami_Aggregati.Data_Fine_Analisi AS dtfine, Nomenclatore_Range.Valore AS valore, Nomenclatore_Range.ModEspr AS modexpr, 
                          Nomenclatore_Range.ModEspr2 AS modexpr2, Risultati_Analisi.Segno AS segno, Risultati_Analisi.Valore AS valore2, dbo_Anag_Tipo_Dett_Diagnostica.Descrizione AS dett1, dbo_Anag_Dettagli_Diagnostica.Dettaglio AS dett2, 
@@ -138,7 +138,7 @@ FROM            Anag_Esiti INNER JOIN
                          Indice_Campioni_Esaminati.Codice = Risultati_Analisi_Dettagli.Codice_Programmazione LEFT OUTER JOIN
                          Anag_Dettagli AS dbo_Anag_Dettagli_Diagnostica ON Risultati_Analisi_Dettagli.Codice_Dettaglio = dbo_Anag_Dettagli_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Tipo_Dett AS dbo_Anag_Tipo_Dett_Diagnostica ON Risultati_Analisi_Dettagli.Tipo_Dettaglio = dbo_Anag_Tipo_Dett_Diagnostica.Codice
-WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data) } >= 2021) AND (dbo_Anag_Reparti_ConfAcc.Descrizione = 'Sede Territoriale di Modena') AND 
+WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data_Accettazione) } >= 2021) AND (dbo_Anag_Reparti_ConfAcc.Descrizione = 'Sede Territoriale di Modena') AND 
                          (Anag_Reparti.Descrizione <> 'Sede Territoriale di Modena')
 
 

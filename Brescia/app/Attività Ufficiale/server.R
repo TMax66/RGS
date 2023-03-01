@@ -1,205 +1,133 @@
-server<-function(input, output, session) { 
+server<-function(input, output, session) {
   
-  
-  ## data aggiornamento dei dati-----
-  output$aggdati <- renderUI({
-    paste0("Dati aggiornati al: ", format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"))
+# data aggiornamento-----
+output$aggdati <- renderUI({
+  tags$div(
+    tags$h3(paste("Attività ufficiale anno", input$selanno), style = "font-weight: 600;"), 
+    tags$h5(paste("Dati aggiornati al ",
+                  format(as.Date(substr(
+                    max(conf$dtreg[conf$annoreg == input$selanno], na.rm = TRUE), start = 1, stop = 11)), "%d-%m-%Y"), sep=""))
+    )
   })
 
-  ## mappa ausl modena----
-  output$BSmap <- renderLeaflet({
-    
-    leaflet() %>% 
-    addTiles() %>%
-      setView(10.27, 45.78, zoom = 9) %>% 
-      addPolygons(data = LOM, fill = FALSE, weight = 1, color = "black") %>% 
-      addPolygons(data = PRlom, fill = FALSE, weight = 1, color = "black") %>%
-      addPolygons(data = BS, stroke = TRUE, fill =  FALSE, weight = 1, color = "black") %>%
-      addPolygons(data = distretti, stroke = TRUE, weight = 1,
-                  fillOpacity = 1,
-                  fillColor = ~factpal(distretto),
-                  label = ~labels) %>% 
-      addPolygons(data = comBS, stroke = TRUE, weight = 1, fill = FALSE, color = "white") %>% 
-      addLabelOnlyMarkers(data = distretti[-c(1),], ~lng, ~lat,
-                          label = ~labels2[-1], 
-                          labelOptions = labelOptions(
-                          noHide = T,
-                          direction = 'center',
-                          textOnly = T,
-                          style = list(
-                          "font-family" = "Montserrat",
-                          "color" = "black",
-                          "font-size" = "9px",
-                          "border" = "2px solid #000",
-                          "background" = "white",
-                          "padding" = "0px 5px 0px 5px",
-                          "text-align" = "center"
-                          ))) %>% 
-      addLabelOnlyMarkers(data = distretti[c(1),], ~lng, ~lat,
-                          label = ~labels2[1], 
-                          labelOptions = labelOptions(
-                          noHide = T,
-                          direction = 'top',
-                          textOnly = T,
-                          style = list(
-                          "font-family" = "Montserrat",
-                          "color" = "black",
-                          "font-size" = "9px",
-                          "border" = "2px solid #000",
-                          "background" = "white",
-                          "padding" = "0px 5px 0px 5px",
-                          "text-align" = "center"
-                          ))) %>% 
-      addPolygons(data = ATS_BS, stroke = TRUE, fill =  FALSE, weight = 1.5, color = "black", opacity = 1) 
-      
-    #addCircleMarkers(lng=coord$lng, lat = coord$lat, radius = 0.5 , label = coord$codaz)
+output$aggconf <- renderUI({
+  paste0("ultimo aggiornamento: ",
+         format(as.Date(substr(max(conf$dtreg, na.rm = TRUE), #conf$dtconf
+                               start = 1, stop = 11)), "%e %B %Y")
+  )
+})
+
+
+# HOME----
+source("server_code/home.R", local = TRUE)
+
+#SANITÀ ANIMALE----
+source("server_code/tabelleSA.R", local = TRUE)
+
+output$tsa <- renderUI({
+  req(input$finalita)
   
-  })
-  
-  ## graficiHome----
-  
-  source("server_code/grafici.R", local = TRUE)
-  
-  ## tabelleHome----
-  
-  source("server_code/tabelleHome.R", local = TRUE)
-  
-  
-  ## tabelle Sanità Animale----
-  
-  source("server_code/tabelleSA.R", local = TRUE)
-  
-  output$tsa <- renderUI({
-    req(input$finalita)
-    wellPanel(
-    fluidRow(
-      dataTableOutput("t1SA")
+  wellPanel(
+  fluidRow(
+    dataTableOutput("t1SA")
     )
-    )
-    
+  )
   })
+
+output$tsadrill <- renderUI({
+  req(input$finalita)
   
-  output$tsadrill <- renderUI({
-    req(input$finalita)
-    wellPanel(style = "padding-top:5px;padding-bottom:24px",
+  wellPanel(style = "padding-top:19px;padding-bottom:24px",
+            fluidRow(
+              column(12,
+                     dataTableOutput("asldrill")
+                     )
+              )
+            )
+  })
+
+output$finalita_text_1 <- renderText({ input$finalita })
+  
+## ricerca codice allevamento-----
+output$tcode <- renderUI({
+  req(input$codiceall)
+  
+  wellPanel(
     fluidRow(
       column(12,
-      dataTableOutput("asldrill")
-    )))
-  })
-  
-  
-  output$finalita_text_1 <- renderText({ input$finalita })
-  
-
-### ricerca codice allevamento-----
-  output$tcode <- renderUI({
-    req(input$codiceall)
-    wellPanel(
-      fluidRow(
-        dataTableOutput("t3SA")
+             dataTableOutput("t3SA"))
       )
     )
-    
   })
   
-  output$tcodedrill <- renderUI({
-    req(input$codiceall)
-    wellPanel(
-      fluidRow(
-        dataTableOutput("cadrill")
+output$tcodedrill <- renderUI({
+  req(input$codiceall)
+  
+  wellPanel(
+    fluidRow(
+      column(12,
+             dataTableOutput("cadrill"))
       )
     )
-    
   })
   
+##mappa buffer----
+source("server_code/mappaSA.R", local = TRUE)
+
   
+#SICUREZZA ALIMENTARE----
+source("server_code/tabelleSicA.R", local = TRUE)
   
+output$tsica <- renderUI({
+  req(input$finalita2)
   
-  
-  
-  
-  
-  
-  
-  
-  # dataTableOutput("t3SA"), br(), hr(),
-  # dataTableOutput("cadrill")
-  
-  
-  
-  
-  
-  
-  ## tabelle Sicurezza Alimentare----
-  
-  source("server_code/tabelleSicA.R", local = TRUE)
-  
-  
-  output$tsica <- renderUI({
-    req(input$finalita2)
-    wellPanel(
-      fluidRow(
-        dataTableOutput("t1SicA")
-      ))
+  wellPanel(
+    fluidRow(
+      dataTableOutput("t1SicA")
+      )
+    )
   })
   
-  output$tsalimdrill <- renderUI({
-    req(input$finalita2)
-    wellPanel(style = "padding-top:5px;padding-bottom:24px",
+output$tsalimdrill <- renderUI({
+  req(input$finalita2)
+  
+  wellPanel(style = "padding-top:19px;padding-bottom:24px",
     fluidRow(
       column(12,
-      dataTableOutput("asldrillalim")
-    )))
+             dataTableOutput("asldrillalim")
+             )
+      )
+    )
   })
-    
 
-  output$finalita_text_2 <- renderText({ input$finalita2 })
-  
- 
+output$finalita_text_2 <- renderText({ input$finalita2 })
 
-#tabelle Alimenti Zootecnici----
+#ALIMENTI ZOOTECNICI----
+source("server_code/tabelleAZ.R", local = TRUE)
+
+output$tza <- renderUI({
+  req(input$finalita3)
   
-  source("server_code/tabelleAZ.R", local = TRUE)
-  
-  
-  output$tza <- renderUI({
-    req(input$finalita3)
-    wellPanel(
-      fluidRow(
-        dataTableOutput("t1AZ")
-      ))
-  })
-  
-  output$aslAZdrill <- renderUI({
-    req(input$finalita3)
-    wellPanel(style = "padding-top:5px;padding-bottom:24px",
+  wellPanel(
     fluidRow(
-      column(12,
-      dataTableOutput("asldrillalimZot")
-    )))
+      dataTableOutput("t1AZ")
+      )
+    )
+  })
+
+output$aslAZdrill <- renderUI({
+  req(input$finalita3)
+  
+  wellPanel(style = "padding-top:19px;padding-bottom:24px",
+            fluidRow(
+              column(12,
+                     dataTableOutput("asldrillalimZot")
+                     )
+              )
+            )
   })
  
-  output$finalita_text_3 <- renderText({ input$finalita3 })
-  
-  
-  
-  
-  
-#mappa buffer----
-  
-  source("server_code/mappa.R", local = TRUE)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ## tabelle alimenti zootecnici
-  
- # source("server_code/tabelleAZ.R", local = TRUE)
+output$finalita_text_3 <- renderText({ input$finalita3 })
+
   
 }

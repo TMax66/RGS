@@ -68,12 +68,12 @@ FROM
   }
 WHERE
   
-  {fn year(dbo.Conferimenti.Data)}  >=  2021
+  {fn year(dbo.Conferimenti.Data_Accettazione)}  >=  2021
   AND  dbo_Anag_Reparti_ConfAcc.Descrizione  =  'Sede Territoriale di Bergamo'
 "
 
 
-proveIN <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
+proveIN <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data_Accettazione) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
                          Anag_Tecniche.Descrizione AS tecnica, Anag_Prove.Descrizione AS prova, Indice_Campioni_Esaminati.Numero_Campione AS numero_del_campione, Esami_Aggregati.Data_Inizio_Analisi AS dtinizio, 
                          Esami_Aggregati.Data_Fine_Analisi AS dtfine, Nomenclatore_Range.Valore AS valore, Nomenclatore_Range.ModEspr AS modexpr, Nomenclatore_Range.ModEspr2 AS modexpr2, Risultati_Analisi.Segno AS segno, 
                          Risultati_Analisi.Valore AS valore2, dbo_Anag_Tipo_Dett_Diagnostica.Descrizione AS dett1, dbo_Anag_Dettagli_Diagnostica.Dettaglio AS dett2, Risultati_Analisi_Dettagli.Testo_Dettaglio AS testodett, Risultati_Analisi.Esito, 
@@ -104,11 +104,11 @@ FROM            Anag_Esiti INNER JOIN
                          Anag_Dettagli AS dbo_Anag_Dettagli_Diagnostica ON Risultati_Analisi_Dettagli.Codice_Dettaglio = dbo_Anag_Dettagli_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Tipo_Dett AS dbo_Anag_Tipo_Dett_Diagnostica ON Risultati_Analisi_Dettagli.Tipo_Dettaglio = dbo_Anag_Tipo_Dett_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Laboratori ON Laboratori_Reparto.Laboratorio = Anag_Laboratori.Codice
-WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data) } >= 2021) AND (Anag_Reparti.Descrizione = 'Sede Territoriale di Bergamo')
+WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data_Accettazione) } >= 2021) AND (Anag_Reparti.Descrizione = 'Sede Territoriale di Bergamo')
 "
 
 
-proveOUT <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
+proveOUT <- "SELECT        Conferimenti.Numero AS nconf, { fn YEAR(Conferimenti.Data_Accettazione) } AS anno, Anag_Reparti.Descrizione AS str_analisi, Anag_Laboratori.Descrizione AS lab_analisi, Anag_Metodi_di_Prova.Descrizione AS mp, 
                          Anag_Tecniche.Descrizione AS tecnica, Anag_Prove.Descrizione AS prova, Indice_Campioni_Esaminati.Numero_Campione AS numero_del_campione, Esami_Aggregati.Data_Invio, Esami_Aggregati.Data_Carico, 
                          Esami_Aggregati.Data_Inizio_Analisi AS dtinizio, Esami_Aggregati.Data_Fine_Analisi AS dtfine, Nomenclatore_Range.Valore AS valore, Nomenclatore_Range.ModEspr AS modexpr, 
                          Nomenclatore_Range.ModEspr2 AS modexpr2, Risultati_Analisi.Segno AS segno, Risultati_Analisi.Valore AS valore2, dbo_Anag_Tipo_Dett_Diagnostica.Descrizione AS dett1, dbo_Anag_Dettagli_Diagnostica.Dettaglio AS dett2, 
@@ -138,74 +138,74 @@ FROM            Anag_Esiti INNER JOIN
                          Indice_Campioni_Esaminati.Codice = Risultati_Analisi_Dettagli.Codice_Programmazione LEFT OUTER JOIN
                          Anag_Dettagli AS dbo_Anag_Dettagli_Diagnostica ON Risultati_Analisi_Dettagli.Codice_Dettaglio = dbo_Anag_Dettagli_Diagnostica.Codice LEFT OUTER JOIN
                          Anag_Tipo_Dett AS dbo_Anag_Tipo_Dett_Diagnostica ON Risultati_Analisi_Dettagli.Tipo_Dettaglio = dbo_Anag_Tipo_Dett_Diagnostica.Codice
-WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data) } >= 2021) AND (dbo_Anag_Reparti_ConfAcc.Descrizione = 'Sede Territoriale di Bergamo') AND 
+WHERE        (Esami_Aggregati.Esame_Altro_Ente = 0) AND (Esami_Aggregati.Esame_Altro_Ente = 0) AND ({ fn YEAR(Conferimenti.Data_Accettazione) } >= 2021) AND (dbo_Anag_Reparti_ConfAcc.Descrizione = 'Sede Territoriale di Bergamo') AND 
                          (Anag_Reparti.Descrizione <> 'Sede Territoriale di Bergamo')
 
 
 "
 
 
-# AbR <- "SELECT
-#   dbo.Conferimenti.Data_Prelievo,
-#   dbo.Conferimenti.Data,
-#   dbo.Conferimenti.Data_Accettazione,
-#   dbo.Conferimenti.Allevix_Proprietario,
-#   dbo.Anag_Specie.Descrizione As specie,
-#   dbo.Anag_Materiali.Descrizione As materiale,
-#   dbo_Anag_Dettagli_Antib_AgEziol.Dettaglio As agezio,
-#   dbo_Anag_Dettagli_Antib_Antib.Dettaglio As antib,
-#   dbo_Anag_Dettagli_Specifica_Antib.Risultato As esito,
-#   dbo.Conferimenti.Numero,
-#   dbo.Indice_Campioni_Esaminati.Numero_Campione
-# FROM
-# { oj dbo.Anag_Specie RIGHT OUTER JOIN dbo.Conferimenti ON ( dbo.Anag_Specie.Codice=dbo.Conferimenti.Codice_Specie )
-#    INNER JOIN dbo.Anag_Comuni ON ( dbo.Anag_Comuni.Codice=dbo.Conferimenti.Luogo_Prelievo )
-#    LEFT OUTER JOIN dbo.Anag_Regioni ON ( dbo.Anag_Regioni.Codice=dbo.Anag_Comuni.Regione )
-#    LEFT OUTER JOIN dbo.Esami_Aggregati ON ( dbo.Conferimenti.Anno=dbo.Esami_Aggregati.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Esami_Aggregati.Numero_Conferimento )
-#    LEFT OUTER JOIN dbo.Nomenclatore_MP ON ( dbo.Esami_Aggregati.Nomenclatore=dbo.Nomenclatore_MP.Codice )
-#    LEFT OUTER JOIN dbo.Nomenclatore_Settori ON ( dbo.Nomenclatore_MP.Nomenclatore_Settore=dbo.Nomenclatore_Settori.Codice )
-#    LEFT OUTER JOIN dbo.Nomenclatore ON ( dbo.Nomenclatore_Settori.Codice_Nomenclatore=dbo.Nomenclatore.Chiave )
-#    LEFT OUTER JOIN dbo.Anag_Prove ON ( dbo.Nomenclatore.Codice_Prova=dbo.Anag_Prove.Codice )
-#    LEFT OUTER JOIN dbo.Laboratori_Reparto ON ( dbo.Esami_Aggregati.RepLab_analisi=dbo.Laboratori_Reparto.Chiave )
-#    LEFT OUTER JOIN dbo.Anag_Reparti ON ( dbo.Laboratori_Reparto.Reparto=dbo.Anag_Reparti.Codice )
-#    INNER JOIN dbo.Indice_Campioni_Esaminati ON ( dbo.Esami_Aggregati.Anno_Conferimento=dbo.Indice_Campioni_Esaminati.Anno_Conferimento and dbo.Esami_Aggregati.Numero_Conferimento=dbo.Indice_Campioni_Esaminati.Numero_Conferimento and dbo.Esami_Aggregati.Codice=dbo.Indice_Campioni_Esaminati.Codice )
-#    LEFT OUTER JOIN dbo.Risultati_Antib_Aggregati ON ( dbo.Indice_Campioni_Esaminati.Anno_Conferimento=dbo.Risultati_Antib_Aggregati.Anno_Conferimento and dbo.Indice_Campioni_Esaminati.Numero_Conferimento=dbo.Risultati_Antib_Aggregati.Numero_Conferimento and dbo.Indice_Campioni_Esaminati.Codice=dbo.Risultati_Antib_Aggregati.Codice_Programmazione and dbo.Indice_Campioni_Esaminati.Numero_Campione=dbo.Risultati_Antib_Aggregati.Nr_Campione )
-#    LEFT OUTER JOIN dbo.Anag_Dettagli  dbo_Anag_Dettagli_Antib_AgEziol ON ( dbo.Risultati_Antib_Aggregati.Cod_AgEziol=dbo_Anag_Dettagli_Antib_AgEziol.Codice )
-#    LEFT OUTER JOIN dbo.Anag_Dettagli  dbo_Anag_Dettagli_Antib_Antib ON ( dbo.Risultati_Antib_Aggregati.Cod_Antib=dbo_Anag_Dettagli_Antib_Antib.Codice )
-#    LEFT OUTER JOIN dbo.Anag_Dettagli_Specifica  dbo_Anag_Dettagli_Specifica_Antib ON ( dbo.Risultati_Antib_Aggregati.Cod_Esito=dbo_Anag_Dettagli_Specifica_Antib.Codice )
-#    INNER JOIN dbo.Anag_Registri ON ( dbo.Conferimenti.Registro=dbo.Anag_Registri.Codice )
-#    LEFT OUTER JOIN dbo.Anag_Materiali ON ( dbo.Anag_Materiali.Codice=dbo.Conferimenti.Codice_Materiale )
-#   }
-# WHERE
-#   dbo.Esami_Aggregati.Esame_Altro_Ente = 0
-#   AND  dbo.Esami_Aggregati.Esame_Altro_Ente = 0
-#   AND  (
-#   dbo.Anag_Prove.Descrizione  IN  ('Antibiogramma')
-#   AND  dbo.Anag_Registri.Descrizione  IN  ('Sanità Animale')
-#   AND  dbo.Anag_Reparti.Descrizione  =  'Sede Territoriale di Modena'
-#   AND  {fn year(dbo.Conferimenti.Data_Accettazione)}  >=  2021)"
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+AbR <- "SELECT
+  dbo.Conferimenti.Data_Prelievo,
+  dbo.Conferimenti.Data,
+  dbo.Conferimenti.Data_Accettazione,
+  dbo.Conferimenti.Allevix_Proprietario,
+  dbo.Anag_Specie.Descrizione As specie,
+  dbo.Anag_Materiali.Descrizione As materiale,
+  dbo_Anag_Dettagli_Antib_AgEziol.Dettaglio As agezio,
+  dbo_Anag_Dettagli_Antib_Antib.Dettaglio As antib,
+  dbo_Anag_Dettagli_Specifica_Antib.Risultato As esito,
+  dbo.Conferimenti.Numero,
+  dbo.Indice_Campioni_Esaminati.Numero_Campione
+FROM
+{ oj dbo.Anag_Specie RIGHT OUTER JOIN dbo.Conferimenti ON ( dbo.Anag_Specie.Codice=dbo.Conferimenti.Codice_Specie )
+   INNER JOIN dbo.Anag_Comuni ON ( dbo.Anag_Comuni.Codice=dbo.Conferimenti.Luogo_Prelievo )
+   LEFT OUTER JOIN dbo.Anag_Regioni ON ( dbo.Anag_Regioni.Codice=dbo.Anag_Comuni.Regione )
+   LEFT OUTER JOIN dbo.Esami_Aggregati ON ( dbo.Conferimenti.Anno=dbo.Esami_Aggregati.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Esami_Aggregati.Numero_Conferimento )
+   LEFT OUTER JOIN dbo.Nomenclatore_MP ON ( dbo.Esami_Aggregati.Nomenclatore=dbo.Nomenclatore_MP.Codice )
+   LEFT OUTER JOIN dbo.Nomenclatore_Settori ON ( dbo.Nomenclatore_MP.Nomenclatore_Settore=dbo.Nomenclatore_Settori.Codice )
+   LEFT OUTER JOIN dbo.Nomenclatore ON ( dbo.Nomenclatore_Settori.Codice_Nomenclatore=dbo.Nomenclatore.Chiave )
+   LEFT OUTER JOIN dbo.Anag_Prove ON ( dbo.Nomenclatore.Codice_Prova=dbo.Anag_Prove.Codice )
+   LEFT OUTER JOIN dbo.Laboratori_Reparto ON ( dbo.Esami_Aggregati.RepLab_analisi=dbo.Laboratori_Reparto.Chiave )
+   LEFT OUTER JOIN dbo.Anag_Reparti ON ( dbo.Laboratori_Reparto.Reparto=dbo.Anag_Reparti.Codice )
+   INNER JOIN dbo.Indice_Campioni_Esaminati ON ( dbo.Esami_Aggregati.Anno_Conferimento=dbo.Indice_Campioni_Esaminati.Anno_Conferimento and dbo.Esami_Aggregati.Numero_Conferimento=dbo.Indice_Campioni_Esaminati.Numero_Conferimento and dbo.Esami_Aggregati.Codice=dbo.Indice_Campioni_Esaminati.Codice )
+   LEFT OUTER JOIN dbo.Risultati_Antib_Aggregati ON ( dbo.Indice_Campioni_Esaminati.Anno_Conferimento=dbo.Risultati_Antib_Aggregati.Anno_Conferimento and dbo.Indice_Campioni_Esaminati.Numero_Conferimento=dbo.Risultati_Antib_Aggregati.Numero_Conferimento and dbo.Indice_Campioni_Esaminati.Codice=dbo.Risultati_Antib_Aggregati.Codice_Programmazione and dbo.Indice_Campioni_Esaminati.Numero_Campione=dbo.Risultati_Antib_Aggregati.Nr_Campione )
+   LEFT OUTER JOIN dbo.Anag_Dettagli  dbo_Anag_Dettagli_Antib_AgEziol ON ( dbo.Risultati_Antib_Aggregati.Cod_AgEziol=dbo_Anag_Dettagli_Antib_AgEziol.Codice )
+   LEFT OUTER JOIN dbo.Anag_Dettagli  dbo_Anag_Dettagli_Antib_Antib ON ( dbo.Risultati_Antib_Aggregati.Cod_Antib=dbo_Anag_Dettagli_Antib_Antib.Codice )
+   LEFT OUTER JOIN dbo.Anag_Dettagli_Specifica  dbo_Anag_Dettagli_Specifica_Antib ON ( dbo.Risultati_Antib_Aggregati.Cod_Esito=dbo_Anag_Dettagli_Specifica_Antib.Codice )
+   INNER JOIN dbo.Anag_Registri ON ( dbo.Conferimenti.Registro=dbo.Anag_Registri.Codice )
+   LEFT OUTER JOIN dbo.Anag_Materiali ON ( dbo.Anag_Materiali.Codice=dbo.Conferimenti.Codice_Materiale )
+  }
+WHERE
+  dbo.Esami_Aggregati.Esame_Altro_Ente = 0
+  AND  dbo.Esami_Aggregati.Esame_Altro_Ente = 0
+  AND  (
+  dbo.Anag_Prove.Descrizione  IN  ('Antibiogramma')
+  AND  dbo.Anag_Registri.Descrizione  IN  ('Sanità Animale')
+  AND  dbo.Anag_Reparti.Descrizione  =  'Sede Territoriale di Bergamo'
+  AND  {fn year(dbo.Conferimenti.Data_Accettazione)}  >=  2021)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # queryFin <- "SELECT
