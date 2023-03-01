@@ -30,8 +30,8 @@ output$thomeSA <- renderDataTable({
       ) %>%
     bind_cols(
       proveHSA() %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)/86400)) %>%
-        summarise('Tempo attesa esito (gg)' = round(quantile(tempo_attesa_esito, probs = 0.5, na.rm = TRUE))) #Tempo attesa mediano (gg)
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
+        summarise('Tempo attesa esito (gg)' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) #Tempo attesa medio (gg)
       ) %>%
     DT::datatable(rownames = FALSE,
                   class = "compact",
@@ -93,8 +93,8 @@ output$thomeAU <- renderDataTable({
     ) %>%
     bind_cols(
       proveHAU() %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)/86400)) %>%
-        summarise('Tempo attesa esito (gg)' = round(quantile(tempo_attesa_esito, probs = 0.5, na.rm = TRUE))) #Tempo attesa mediano (gg)
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
+        summarise('Tempo attesa esito (gg)' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) #Tempo attesa medio (gg)
     ) %>%
     DT::datatable(rownames = FALSE,
                   class = "compact",
@@ -155,9 +155,8 @@ output$thomeAZ <- renderDataTable({
     ) %>%
     bind_cols(
       proveHAZ() %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)#/86400
-                                               )) %>%
-        summarise('Tempo attesa esito (gg)' = round(quantile(tempo_attesa_esito, probs = 0.5, na.rm = TRUE))) #Tempo attesa mediano (gg)
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
+        summarise('Tempo attesa esito (gg)' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) #Tempo attesa medio (gg)
     ) %>%
     DT::datatable(rownames = FALSE,
                   class = "compact",

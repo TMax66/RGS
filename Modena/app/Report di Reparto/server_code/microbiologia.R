@@ -70,7 +70,7 @@ output$microP2 <- renderPlotly({
   
   microbiologia %>%
     filter(annoiniz == input$selanno) %>% 
-    mutate(tempo_esecuzione = as.numeric((dtfine-dtconf)/86400)) %>%
+    mutate(tempo_esecuzione = as.numeric(difftime(dtfine, dtconf, units = c("days")))) %>%
     group_by(prova, weekiniz) %>%
     summarise(tmesec = round(mean(tempo_esecuzione, na.rm = TRUE), 1)) %>%
     ungroup() %>% 
@@ -135,7 +135,7 @@ dt_micro <- reactive({
     bind_cols(
       microbiologia %>%
         filter(annoiniz == input$selanno) %>% 
-        mutate(tempo_esecuzione = as.numeric((dtfine-dtconf)/86400)) %>%
+        mutate(tempo_esecuzione = as.numeric(difftime(dtfine, dtconf, units = c("days")))) %>%
         group_by(prova) %>%
         summarise(tmesec = round(mean(tempo_esecuzione, na.rm = TRUE), 1)) %>%
         ungroup() %>%
