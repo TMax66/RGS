@@ -227,11 +227,12 @@ output$t1 <- renderDataTable(
         # ungroup() %>%
         # dplyr::select(-ASL)) %>%
     
+    
     bind_cols(
       confHSA() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
         group_by(ASL) %>% 
-        mutate(tempo_consegna = as.numeric((dtconf-dtprel)/86400)) %>%
+        mutate(tempo_consegna = as.numeric(difftime(dtconf, dtprel, units = c("days")))) %>%
         summarise('Tempo medio consegna' = round(mean(tempo_consegna, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
         dplyr::select(-ASL)) %>%
@@ -239,7 +240,7 @@ output$t1 <- renderDataTable(
     bind_cols(
       confHSA() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)/86400)) %>% 
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
         group_by(ASL) %>% 
         summarise('Tempo medio attesa esito' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
@@ -306,7 +307,7 @@ output$t2 <- renderDataTable(
       confHAU() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
         group_by(ASL) %>% 
-        mutate(tempo_consegna = as.numeric((dtconf-dtprel)/86400)) %>%
+        mutate(tempo_consegna = as.numeric(difftime(dtconf, dtprel, units = c("days")))) %>%
         summarise('Tempo medio consegna' = round(mean(tempo_consegna, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
         dplyr::select(-ASL)) %>%
@@ -314,7 +315,7 @@ output$t2 <- renderDataTable(
     bind_cols(
       confHAU() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)/86400)) %>% 
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
         group_by(ASL) %>% 
         summarise('Tempo medio attesa esito' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
@@ -380,7 +381,7 @@ output$t3 <- renderDataTable(
       confHAZ() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
         group_by(ASL) %>% 
-        mutate(tempo_consegna = as.numeric((dtconf-dtprel)/86400)) %>%
+        mutate(tempo_consegna = as.numeric(difftime(dtconf, dtprel, units = c("days")))) %>%
         summarise('Tempo medio consegna' = round(mean(tempo_consegna, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
         dplyr::select(-ASL)) %>%
@@ -388,8 +389,7 @@ output$t3 <- renderDataTable(
     bind_cols(
       confHAZ() %>%
         distinct(Nconf, .keep_all = TRUE) %>%
-        mutate(tempo_attesa_esito = as.numeric((dtprimordp-dtconf)#/86400
-                                               )) %>% 
+        mutate(tempo_attesa_esito = as.numeric(difftime(dtprimordp, dtconf, units = c("days")))) %>%
         group_by(ASL) %>% 
         summarise('Tempo medio attesa esito' = round(mean(tempo_attesa_esito, na.rm = TRUE), 1)) %>% 
         ungroup() %>%
