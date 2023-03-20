@@ -35,7 +35,8 @@ conf <- "SELECT
   dbo.RDP_Date_Emissione.Istanza_RDP,
   dbo.Conferimenti.Riferimenti As verbale,
   dbo.RDP_Date_Emissione.SISI_Numero_RDP,
-  dbo.RDP_Date_Emissione.SISI_Data_Firma_RDP
+  dbo.RDP_Date_Emissione.SISI_Data_Firma_RDP,
+  dbo_Operatori_di_sistema_ConfMatr.Descr_Completa As Operatore
 FROM
 { oj dbo.Anag_Registri INNER JOIN dbo.Conferimenti ON ( dbo.Conferimenti.Registro=dbo.Anag_Registri.Codice )
    INNER JOIN dbo.Anag_Comuni ON ( dbo.Anag_Comuni.Codice=dbo.Conferimenti.Luogo_Prelievo )
@@ -60,6 +61,7 @@ FROM
    LEFT OUTER JOIN dbo.Anag_Asl ON ( dbo.Anag_Asl.codice=dbo.Conferimenti.Cod_Asl )
    INNER JOIN dbo.Conferimenti_Finalita ON ( dbo.Conferimenti.Anno=dbo.Conferimenti_Finalita.Anno and dbo.Conferimenti.Numero=dbo.Conferimenti_Finalita.Numero )
    INNER JOIN dbo.Anag_Finalita  dbo_Anag_Finalita_Confer ON ( dbo.Conferimenti_Finalita.Finalita=dbo_Anag_Finalita_Confer.Codice )
+   INNER JOIN dbo.Operatori_di_sistema  dbo_Operatori_di_sistema_ConfMatr ON ( dbo.Conferimenti.Matr_Ins=dbo_Operatori_di_sistema_ConfMatr.Ident_Operatore )
    LEFT OUTER JOIN dbo.RDP_Date_Emissione ON ( dbo.RDP_Date_Emissione.Anno=dbo.Conferimenti.Anno and dbo.RDP_Date_Emissione.Numero=dbo.Conferimenti.Numero )
    LEFT OUTER JOIN dbo.Conferimenti_Motivi_Prelievo ON ( dbo.Conferimenti_Motivi_Prelievo.Anno_Conferimento=dbo.Conferimenti.Anno and dbo.Conferimenti_Motivi_Prelievo.Numero_Conferimento=dbo.Conferimenti.Numero )
    LEFT OUTER JOIN dbo.Anag_Motivi_Prelievo ON ( dbo.Anag_Motivi_Prelievo.Codice=dbo.Conferimenti_Motivi_Prelievo.Motivo_Prelievo )

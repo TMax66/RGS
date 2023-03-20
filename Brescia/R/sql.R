@@ -1,71 +1,73 @@
 conf <- "SELECT
-  dbo.Conferimenti.Numero As nconf,
-  dbo.Anag_Registri.Descrizione As settore,
-  dbo_Anag_Finalita_Confer.Descrizione As finalita,
-  dbo.Anag_Motivi_Prelievo.Descrizione As motivo_prel,
-  dbo_Anag_Reparti_ConfAcc.Descrizione AS str_acc,
-  dbo_Anag_Reparti_ConfProp.Descrizione As str_propr,
-  dbo_Anag_Bool_Insolvenza.Descrizione2 As insolvente,
-  dbo.Conferimenti.Temperatura_Campione_Sentinella As temp_campsent,
-  dbo.Conferimenti.Data_Prelievo As dtprel,
-  dbo.Conferimenti.Data As dtconf,
-  dbo.Conferimenti.Data_Accettazione As dtreg,
-  dbo.Conferimenti_Scostamenti.Scostamento As scostamento,
-  dbo.Anag_Specie.Descrizione As specie,
-  dbo.Anag_Materiali.Descrizione As materiale,
-  dbo.Anag_Matrici.Descrizione As matrice,
-  dbo.Anag_Origine.Descrizione As origine,
-  dbo_Anag_Referenti_Prop.Ragione_Sociale As proprietario,
-  dbo.Anag_Referenti.Ragione_Sociale As conferente,
-  dbo_Anag_Referenti_Veter.Ragione_Sociale As veterinario,
-  dbo_Anag_Referenti_DitteProd.Ragione_Sociale As ditta_prod,
-  dbo_Anag_Referenti_DestFatt.Ragione_Sociale As dest_fatt,
-  dbo_Anag_Referenti_DestRdP.Ragione_Sociale As dest_rdp,
-  dbo.Conferimenti.Allevix_Proprietario As codaz,
-  dbo.Anag_Regioni.Descrizione As regione,
-  dbo.Anag_Comuni.Provincia As provincia,
-  dbo.Anag_Comuni.Descrizione As comune, 
-  dbo.Anag_Asl.Descrizione As ASL,
-  dbo.Anag_Tipo_Prel.Descrizione As tipo_prelievo,
-  dbo.Anag_TipoConf.Descrizione As pagamento,
-  dbo.Conferimenti.NrCampioni,
-  dbo.Esami_Aggregati.Data_Invio,
-  dbo.Esami_Aggregati.Data_Carico,
-  convert (SMALLDATETIME, dbo.Conferimenti.Data_Primo_RDP_Completo_Firmato) As dtprimordp,
-  dbo.RDP_Date_Emissione.Istanza_RDP,
-  dbo.Conferimenti.Riferimenti As verbale,
-  dbo.RDP_Date_Emissione.SISI_Numero_RDP,
-  dbo.RDP_Date_Emissione.SISI_Data_Firma_RDP
+dbo.Conferimenti.Numero As nconf,
+dbo.Anag_Registri.Descrizione As settore,
+dbo_Anag_Finalita_Confer.Descrizione As finalita,
+dbo.Anag_Motivi_Prelievo.Descrizione As motivo_prel,
+dbo_Anag_Reparti_ConfAcc.Descrizione AS str_acc,
+dbo_Anag_Reparti_ConfProp.Descrizione As str_propr,
+dbo_Anag_Bool_Insolvenza.Descrizione2 As insolvente,
+dbo.Conferimenti.Temperatura_Campione_Sentinella As temp_campsent,
+dbo.Conferimenti.Data_Prelievo As dtprel,
+dbo.Conferimenti.Data As dtconf,
+dbo.Conferimenti.Data_Accettazione As dtreg,
+dbo.Conferimenti_Scostamenti.Scostamento As scostamento,
+dbo.Anag_Specie.Descrizione As specie,
+dbo.Anag_Materiali.Descrizione As materiale,
+dbo.Anag_Matrici.Descrizione As matrice,
+dbo.Anag_Origine.Descrizione As origine,
+dbo_Anag_Referenti_Prop.Ragione_Sociale As proprietario,
+dbo.Anag_Referenti.Ragione_Sociale As conferente,
+dbo_Anag_Referenti_Veter.Ragione_Sociale As veterinario,
+dbo_Anag_Referenti_DitteProd.Ragione_Sociale As ditta_prod,
+dbo_Anag_Referenti_DestFatt.Ragione_Sociale As dest_fatt,
+dbo_Anag_Referenti_DestRdP.Ragione_Sociale As dest_rdp,
+dbo.Conferimenti.Allevix_Proprietario As codaz,
+dbo.Anag_Regioni.Descrizione As regione,
+dbo.Anag_Comuni.Provincia As provincia,
+dbo.Anag_Comuni.Descrizione As comune, 
+dbo.Anag_Asl.Descrizione As ASL,
+dbo.Anag_Tipo_Prel.Descrizione As tipo_prelievo,
+dbo.Anag_TipoConf.Descrizione As pagamento,
+dbo.Conferimenti.NrCampioni,
+dbo.Esami_Aggregati.Data_Invio,
+dbo.Esami_Aggregati.Data_Carico,
+convert (SMALLDATETIME, dbo.Conferimenti.Data_Primo_RDP_Completo_Firmato) As dtprimordp,
+dbo.RDP_Date_Emissione.Istanza_RDP,
+dbo.Conferimenti.Riferimenti As verbale,
+dbo.RDP_Date_Emissione.SISI_Numero_RDP,
+dbo.RDP_Date_Emissione.SISI_Data_Firma_RDP,
+dbo_Operatori_di_sistema_ConfMatr.Descr_Completa As Operatore
 FROM
 { oj dbo.Anag_Registri INNER JOIN dbo.Conferimenti ON ( dbo.Conferimenti.Registro=dbo.Anag_Registri.Codice )
-   INNER JOIN dbo.Anag_Comuni ON ( dbo.Anag_Comuni.Codice=dbo.Conferimenti.Luogo_Prelievo )
-   LEFT OUTER JOIN dbo.Anag_Regioni ON ( dbo.Anag_Regioni.Codice=dbo.Anag_Comuni.Regione )
-   INNER JOIN dbo.Anag_Referenti ON ( dbo.Conferimenti.Conferente=dbo.Anag_Referenti.Codice )
-   LEFT OUTER JOIN dbo.Anag_Matrici ON ( dbo.Conferimenti.Matrice=dbo.Anag_Matrici.Codice )
-   LEFT OUTER JOIN dbo.Esami_Aggregati ON ( dbo.Conferimenti.Anno=dbo.Esami_Aggregati.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Esami_Aggregati.Numero_Conferimento )
-   INNER JOIN dbo.Anag_Tipo_Prel ON ( dbo.Conferimenti.Tipo_Prelievo=dbo.Anag_Tipo_Prel.Codice )
-   INNER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DestRdP ON ( dbo.Conferimenti.Dest_Rapporto_Prova=dbo_Anag_Referenti_DestRdP.Codice )
-   INNER JOIN dbo.Laboratori_Reparto  dbo_Laboratori_Reparto_ConfProp ON ( dbo.Conferimenti.RepLab=dbo_Laboratori_Reparto_ConfProp.Chiave )
-   INNER JOIN dbo.Anag_Reparti  dbo_Anag_Reparti_ConfProp ON ( dbo_Laboratori_Reparto_ConfProp.Reparto=dbo_Anag_Reparti_ConfProp.Codice )
-   INNER JOIN dbo.Laboratori_Reparto  dbo_Laboratori_Reparto_ConfAcc ON ( dbo.Conferimenti.RepLab_Conferente=dbo_Laboratori_Reparto_ConfAcc.Chiave )
-   INNER JOIN dbo.Anag_Reparti  dbo_Anag_Reparti_ConfAcc ON ( dbo_Laboratori_Reparto_ConfAcc.Reparto=dbo_Anag_Reparti_ConfAcc.Codice )
-   LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_Prop ON ( dbo_Anag_Referenti_Prop.Codice=dbo.Conferimenti.Proprietario )
-   LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_Veter ON ( dbo.Conferimenti.Veterinario=dbo_Anag_Referenti_Veter.Codice )
-   LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DitteProd ON ( dbo.Conferimenti.Ditta_Prod=dbo_Anag_Referenti_DitteProd.Codice )
-   LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DestFatt ON ( dbo_Anag_Referenti_DestFatt.Codice=dbo.Conferimenti.Dest_Fattura )
-   INNER JOIN dbo.Anag_TipoConf ON ( dbo.Anag_TipoConf.Codice=dbo.Conferimenti.Tipo )
-   INNER JOIN dbo.Anag_Origine ON ( dbo.Anag_Origine.Codice=dbo.Conferimenti.Origine )
-   LEFT OUTER JOIN dbo.Anag_Materiali ON ( dbo.Anag_Materiali.Codice=dbo.Conferimenti.Codice_Materiale )
-   LEFT OUTER JOIN dbo.Anag_Specie ON ( dbo.Anag_Specie.Codice=dbo.Conferimenti.Codice_Specie )
-   LEFT OUTER JOIN dbo.Anag_Asl ON ( dbo.Anag_Asl.codice=dbo.Conferimenti.Cod_Asl )
-   INNER JOIN dbo.Conferimenti_Finalita ON ( dbo.Conferimenti.Anno=dbo.Conferimenti_Finalita.Anno and dbo.Conferimenti.Numero=dbo.Conferimenti_Finalita.Numero )
-   INNER JOIN dbo.Anag_Finalita  dbo_Anag_Finalita_Confer ON ( dbo.Conferimenti_Finalita.Finalita=dbo_Anag_Finalita_Confer.Codice )
-   LEFT OUTER JOIN dbo.RDP_Date_Emissione ON ( dbo.RDP_Date_Emissione.Anno=dbo.Conferimenti.Anno and dbo.RDP_Date_Emissione.Numero=dbo.Conferimenti.Numero )
-   LEFT OUTER JOIN dbo.Conferimenti_Motivi_Prelievo ON ( dbo.Conferimenti_Motivi_Prelievo.Anno_Conferimento=dbo.Conferimenti.Anno and dbo.Conferimenti_Motivi_Prelievo.Numero_Conferimento=dbo.Conferimenti.Numero )
-   LEFT OUTER JOIN dbo.Anag_Motivi_Prelievo ON ( dbo.Anag_Motivi_Prelievo.Codice=dbo.Conferimenti_Motivi_Prelievo.Motivo_Prelievo )
-   INNER JOIN dbo.Anag_Boolean  dbo_Anag_Bool_Insolvenza ON ( dbo_Anag_Bool_Insolvenza.Codice=dbo.Conferimenti.Accettato_Con_Insolvenza )
-   LEFT OUTER JOIN dbo.Conferimenti_Scostamenti ON ( dbo.Conferimenti.Anno=dbo.Conferimenti_Scostamenti.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Conferimenti_Scostamenti.Numero_Conferimento )
-  }
+  INNER JOIN dbo.Anag_Comuni ON ( dbo.Anag_Comuni.Codice=dbo.Conferimenti.Luogo_Prelievo )
+  LEFT OUTER JOIN dbo.Anag_Regioni ON ( dbo.Anag_Regioni.Codice=dbo.Anag_Comuni.Regione )
+  INNER JOIN dbo.Anag_Referenti ON ( dbo.Conferimenti.Conferente=dbo.Anag_Referenti.Codice )
+  LEFT OUTER JOIN dbo.Anag_Matrici ON ( dbo.Conferimenti.Matrice=dbo.Anag_Matrici.Codice )
+  LEFT OUTER JOIN dbo.Esami_Aggregati ON ( dbo.Conferimenti.Anno=dbo.Esami_Aggregati.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Esami_Aggregati.Numero_Conferimento )
+  INNER JOIN dbo.Anag_Tipo_Prel ON ( dbo.Conferimenti.Tipo_Prelievo=dbo.Anag_Tipo_Prel.Codice )
+  INNER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DestRdP ON ( dbo.Conferimenti.Dest_Rapporto_Prova=dbo_Anag_Referenti_DestRdP.Codice )
+  INNER JOIN dbo.Laboratori_Reparto  dbo_Laboratori_Reparto_ConfProp ON ( dbo.Conferimenti.RepLab=dbo_Laboratori_Reparto_ConfProp.Chiave )
+  INNER JOIN dbo.Anag_Reparti  dbo_Anag_Reparti_ConfProp ON ( dbo_Laboratori_Reparto_ConfProp.Reparto=dbo_Anag_Reparti_ConfProp.Codice )
+  INNER JOIN dbo.Laboratori_Reparto  dbo_Laboratori_Reparto_ConfAcc ON ( dbo.Conferimenti.RepLab_Conferente=dbo_Laboratori_Reparto_ConfAcc.Chiave )
+  INNER JOIN dbo.Anag_Reparti  dbo_Anag_Reparti_ConfAcc ON ( dbo_Laboratori_Reparto_ConfAcc.Reparto=dbo_Anag_Reparti_ConfAcc.Codice )
+  LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_Prop ON ( dbo_Anag_Referenti_Prop.Codice=dbo.Conferimenti.Proprietario )
+  LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_Veter ON ( dbo.Conferimenti.Veterinario=dbo_Anag_Referenti_Veter.Codice )
+  LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DitteProd ON ( dbo.Conferimenti.Ditta_Prod=dbo_Anag_Referenti_DitteProd.Codice )
+  LEFT OUTER JOIN dbo.Anag_Referenti  dbo_Anag_Referenti_DestFatt ON ( dbo_Anag_Referenti_DestFatt.Codice=dbo.Conferimenti.Dest_Fattura )
+  INNER JOIN dbo.Anag_TipoConf ON ( dbo.Anag_TipoConf.Codice=dbo.Conferimenti.Tipo )
+  INNER JOIN dbo.Anag_Origine ON ( dbo.Anag_Origine.Codice=dbo.Conferimenti.Origine )
+  LEFT OUTER JOIN dbo.Anag_Materiali ON ( dbo.Anag_Materiali.Codice=dbo.Conferimenti.Codice_Materiale )
+  LEFT OUTER JOIN dbo.Anag_Specie ON ( dbo.Anag_Specie.Codice=dbo.Conferimenti.Codice_Specie )
+  LEFT OUTER JOIN dbo.Anag_Asl ON ( dbo.Anag_Asl.codice=dbo.Conferimenti.Cod_Asl )
+  INNER JOIN dbo.Conferimenti_Finalita ON ( dbo.Conferimenti.Anno=dbo.Conferimenti_Finalita.Anno and dbo.Conferimenti.Numero=dbo.Conferimenti_Finalita.Numero )
+  INNER JOIN dbo.Anag_Finalita  dbo_Anag_Finalita_Confer ON ( dbo.Conferimenti_Finalita.Finalita=dbo_Anag_Finalita_Confer.Codice )
+  INNER JOIN dbo.Operatori_di_sistema  dbo_Operatori_di_sistema_ConfMatr ON ( dbo.Conferimenti.Matr_Ins=dbo_Operatori_di_sistema_ConfMatr.Ident_Operatore )
+  LEFT OUTER JOIN dbo.RDP_Date_Emissione ON ( dbo.RDP_Date_Emissione.Anno=dbo.Conferimenti.Anno and dbo.RDP_Date_Emissione.Numero=dbo.Conferimenti.Numero )
+  LEFT OUTER JOIN dbo.Conferimenti_Motivi_Prelievo ON ( dbo.Conferimenti_Motivi_Prelievo.Anno_Conferimento=dbo.Conferimenti.Anno and dbo.Conferimenti_Motivi_Prelievo.Numero_Conferimento=dbo.Conferimenti.Numero )
+  LEFT OUTER JOIN dbo.Anag_Motivi_Prelievo ON ( dbo.Anag_Motivi_Prelievo.Codice=dbo.Conferimenti_Motivi_Prelievo.Motivo_Prelievo )
+  INNER JOIN dbo.Anag_Boolean  dbo_Anag_Bool_Insolvenza ON ( dbo_Anag_Bool_Insolvenza.Codice=dbo.Conferimenti.Accettato_Con_Insolvenza )
+  LEFT OUTER JOIN dbo.Conferimenti_Scostamenti ON ( dbo.Conferimenti.Anno=dbo.Conferimenti_Scostamenti.Anno_Conferimento and dbo.Conferimenti.Numero=dbo.Conferimenti_Scostamenti.Numero_Conferimento )
+}
 WHERE
   
   {fn year(dbo.Conferimenti.Data_Accettazione)}  >=  2021

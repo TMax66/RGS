@@ -169,7 +169,7 @@ output$table <- renderReactable({
     conf_table <- confacc() %>%
       filter(sett_reg == selected_bar()) %>% 
       select(Nconf2, settore, tipo_prelievo, finalita, dtprel, dtconf, dtreg,
-             conferente, dest_rdp, NrCampioni)
+             conferente, dest_rdp, NrCampioni, Operatore)
     
     reactable(conf_table,
               filterable = TRUE,
@@ -196,6 +196,8 @@ output$table <- renderReactable({
                 conferente = colDef(name = "Conferente"),
                 dest_rdp = colDef(name = "Destinatario RdP"),
                 NrCampioni = colDef(name = "Campioni conferiti",
+                                    minWidth = 70),
+                Operatore = colDef(name = "Operatore",
                                     minWidth = 70)
               ),
               language = reactableLang(
@@ -435,7 +437,7 @@ output$table2 <- renderReactable({
     conf_table2 <- confacc2() %>%
       filter(dtreg == selected_bar2()) %>% 
       select(Nconf, settore, tipo_prelievo, finalita, dtprel, dtconf, dtreg,
-             conferente, dest_rdp, NrCampioni)
+             conferente, dest_rdp, NrCampioni, Operatore)
     
     reactable(conf_table2,
               filterable = TRUE,
@@ -462,7 +464,8 @@ output$table2 <- renderReactable({
                 conferente = colDef(name = "Conferente"),
                 dest_rdp = colDef(name = "Destinatario RdP"),
                 NrCampioni = colDef(name = "Campioni conferiti",
-                                    minWidth = 70)
+                                    minWidth = 70), 
+                Operatore = colDef(name = "Operatore",minWidth = 85)
               ),
               language = reactableLang(
                 #sortLabel = "Sort {name}",
@@ -510,7 +513,8 @@ output$downloadConfAcc <- downloadHandler(
                "Data registrazione" = dtreg,
                "Conferente" = conferente,
                "Destinatario RdP" = dest_rdp,
-               "Campioni conferiti" = NrCampioni),
+               "Campioni conferiti" = NrCampioni,
+               "Operatore" = Operatore),
       con)
   }
 )
